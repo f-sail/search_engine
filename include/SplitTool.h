@@ -16,7 +16,7 @@ class SplitToolCppJieba
 : public SplitTool
 {
     public:
-    SplitToolCppJieba() = default;
+    SplitToolCppJieba();
     ~SplitToolCppJieba();
     std::vector<std::string> cut(std::string &) override;
 };

@@ -2,6 +2,8 @@
 #include "../include/DicProducer.h"
 #include "../include/SplitTool.h"
 
+#include <cctype>
+#include <cstdio>
 #include <iostream>
 /* using std::cout; */
 /* using std::endl; */
@@ -14,28 +16,136 @@
 #include <fstream>
 #include <sstream>
 
+
+#define BUFF_SIZE 40960
+
 using std::map;
 using std::set;
 using std::string;
 using std::vector;
 using std::ifstream;
+using std::ofstream;
 using std::istringstream;
 using std::ostringstream;
 
 
 DicProducer::DicProducer(std::string, SplitTool* tool) 
+    : _cuttor(tool)
 {
-
+    getFiles(Configuration::getInstance()->getConfigMap()["files_path"]);
+    buildFreq();
+    buildDict();
+    createIndex();
+    store();
+    return;
 }
+
 DicProducer::~DicProducer(){
-
+    if(_cuttor){
+        delete _cuttor;
+    }
+    return;
 }
-void DicProducer::buildEnDict(){
 
+void DicProducer::buildFreq(){
+    for(const string & path: _files){
+        /* std::cout << "path = " << path << "\n"; */
+        ifstream ifs(path);
+        if(!ifs){
+            std::cerr << "ifstream open file failed!" << std::endl;
+            return;
+        }
+        char buff[BUFF_SIZE] = {0};
+        while(ifs.read(buff, BUFF_SIZE - 1)){
+            string str(buff);
+            vector<string> words(_cuttor->cut(str));
+                for(string str: words){
+                    for(char& c: str){
+                        if((0 == (c & 0x80)) && isalpha(c)){
+                            c = tolower(c);
+                        }
+                    }
+                    if(_mFreq.count(str)){
+                        ++_mFreq[str];
+                    }else{
+                        _mFreq[str] = 1;
+                    }
+                }
+        }
+        ifs.close();
+    }
+    return;
 }
-void DicProducer::buildCnDict(){
-    vector<string> words;
-    string dir = Configuration::getInstance()->getConfigMap()["chinese_directory"];
+
+void DicProducer::buildDict(){
+    string word;
+    set<string> stop_words;
+
+    ifstream ifs_en(Configuration::getInstance()->getConfigMap()["stop_words_en"]);
+    while(ifs_en >> word){
+        stop_words.insert(word);
+    }
+    ifs_en.close();
+    ifstream ifs_zh(Configuration::getInstance()->getConfigMap()["stop_words_en"]);
+    while(ifs_zh >> word){
+        stop_words.insert(word);
+    }
+    ifs_zh.close();
+
+    for(std::pair<string, int> pair: _mFreq){
+        if(stop_words.count(pair.first)){
+            continue;
+        }else{
+            _dict.push_back(pair);
+        }
+    }
+    return;
+}
+
+void DicProducer::createIndex(){
+    for(size_t idx_vec = 0; idx_vec < _dict.size(); ++idx_vec){
+        string str = _dict[idx_vec].first;
+        for(size_t idx_str = 0; idx_str < str.size();){
+            size_t n =  nBytesCode(str[idx_str]);
+            _index[str.substr(idx_str, n)].insert(idx_vec);
+            idx_str += n;
+        }
+    }
+    return;
+}
+
+void DicProducer::store(){
+    /* store "dict.dat" */{
+        ofstream ofs(Configuration::getInstance()->getConfigMap()["dict.dat"]);    
+        if(!ofs){
+            std::cerr << "ifstream open file failed!" << std::endl;
+            return;
+        }
+        for(const std::pair<std::string, int>& pair: _dict){
+            ofs << pair.first << " " << pair.second << "\n";
+        }
+        ofs.close();
+    }
+
+    /* store "dictindex.dat" */{
+        ofstream ofs(Configuration::getInstance()->getConfigMap()["dictindex.dat"]);
+        if(!ofs){
+            std::cerr << "ifstream open file failed!" << std::endl;
+            return;
+        }
+        for(const std::pair<std::string, set<int>>& pair: _index){
+            ofs << pair.first << " ";
+            for(int i: pair.second){
+                ofs << i << " ";
+            }
+            ofs << "\n";
+        }
+        ofs.close();
+    }
+    return;
+}
+
+void DicProducer::getFiles(const std::string& dir){
     DIR * dirp = opendir(dir.data());
     if(nullptr == dirp){
         // todo
@@ -45,26 +155,27 @@ void DicProducer::buildCnDict(){
     struct dirent * entry;
     while((entry = readdir(dirp)) != nullptr){
         if(strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")){
-            /* std::cout << entry->d_name << std::endl; */
-            ifstream ifs(dir + entry->d_name);
-            if(!ifs){
-                std::cerr << "ifstream open file failed!" << std::endl;
-                return;
+            if(entry->d_type == DT_DIR){
+                getFiles(dir + entry->d_name + '/');
+            }else if(entry->d_type == DT_REG){
+                _files.push_back(dir + entry->d_name);
             }
-            
-
-
-            ifs.close();
         }
-    }// !while, 目录遍历完成
-    std::cout << "sizeof(vector) = " << words.size() << std::endl;
-    closedir(dirp);
+    }
     return;
 }
-void DicProducer::createIndex(){
 
+size_t DicProducer::nBytesCode(const char ch){
+    if(ch & (1 << 7)){
+        int nBytes = 1;
+        for(int idx = 0; idx != 6; ++idx){
+            if(ch & (1 << (6 - idx))){
+                ++nBytes;
+            }else{
+                break;
+            }
+        }
+        return nBytes;
+    }
+    return 1;
 }
-void DicProducer::store(){
-
-}
-

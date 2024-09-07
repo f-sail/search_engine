@@ -1,6 +1,5 @@
 /* #include "SplitTool.h" */
 /* #include "cppjieba/Jieba.hpp" */
-#define BUFF_SIZE 4096
 
 #include "../include/SplitTool.h"
 #include "../include/cppjieba/Jieba.hpp"
@@ -43,12 +42,16 @@ vector<string> SplitToolCppJieba::cut(string & str){
     /* 清洗 */
     auto it = str.begin();
     while(it != str.end()){
-        if('\r' == *it || '\n' == *it){
-            it = str.erase(it);
-            continue;
+        if(0 == (*it & 0x80)){
+            if(!isalpha(*it)){
+                *it = ' ';
+            }else{
+                *it = tolower(*it);
+            }
         }
         ++it;
-    }
+    }                                        
+    
     /* 分词 */
     vector<string> words; 
     jieba.Cut(str, words);

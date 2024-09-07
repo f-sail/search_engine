@@ -1,4 +1,5 @@
 #include "../include/SplitTool.h"
+#include "../include/DicProducer.h"
 
 #include <iostream>
 using std::cout;
@@ -18,6 +19,9 @@ int main(int args, char *argv[])
     for(auto i: vec){
         cout << i << endl;
     }
+   
+    DicProducer dp("", new SplitToolCppJieba());
+    
 
     return 0;
 }
