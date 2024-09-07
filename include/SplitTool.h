@@ -6,9 +6,9 @@
 
 class SplitTool{
 public:
-    SplitTool();
+    SplitTool() = default;
     virtual ~SplitTool() = 0;
-    virtual std::vector<std::string> cut() = 0;
+    virtual std::vector<std::string> cut(std::string &) = 0;
 };
 
 
@@ -16,9 +16,9 @@ class SplitToolCppJieba
 : public SplitTool
 {
     public:
-    SplitToolCppJieba();
+    SplitToolCppJieba() = default;
     ~SplitToolCppJieba();
-    std::vector<std::string> cut() override;
+    std::vector<std::string> cut(std::string &) override;
 };
 
 
