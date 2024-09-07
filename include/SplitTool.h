@@ -4,6 +4,10 @@
 #include <string>
 #include <vector>
 
+namespace cppjieba{
+    class Jieba;
+};
+
 class SplitTool{
 public:
     SplitTool() = default;
@@ -15,10 +19,12 @@ public:
 class SplitToolCppJieba
 : public SplitTool
 {
-    public:
+public:
     SplitToolCppJieba();
     ~SplitToolCppJieba();
     std::vector<std::string> cut(std::string &) override;
+private:
+    cppjieba::Jieba* _pJieba;
 };
 
 

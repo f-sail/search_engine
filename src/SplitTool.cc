@@ -26,19 +26,27 @@ SplitTool::~SplitTool(){
 
 }
 
-SplitToolCppJieba::~SplitToolCppJieba(){
-
-}
-
-vector<string> SplitToolCppJieba::cut(string & str){
+SplitToolCppJieba::SplitToolCppJieba()
+: _pJieba(nullptr)
+{
     const char* const DICT_PATH = "../include/cppjieba/dict/jieba.dict.utf8";    
     const char* const HMM_PATH = "../include/cppjieba/dict/hmm_model.utf8";
     const char* const USER_DICT_PATH = "../include/cppjieba/dict/user.dict.utf8";
     const char* const IDF_PATH = "../include/cppjieba/dict/idf.utf8";
     const char* const STOP_WORD_PATH = "../include/cppjieba/dict/stop_words.utf8";
+    /* cppjieba::Jieba jieba(DICT_PATH, HMM_PATH, DICT_PATH, IDF_PATH, STOP_WORD_PATH); */
+    _pJieba = new cppjieba::Jieba(DICT_PATH, HMM_PATH, DICT_PATH, IDF_PATH, STOP_WORD_PATH);
+    return;
+}
 
-    cppjieba::Jieba jieba(DICT_PATH, HMM_PATH, DICT_PATH, IDF_PATH, STOP_WORD_PATH);
+SplitToolCppJieba::~SplitToolCppJieba(){
+    if(_pJieba){
+        delete _pJieba;
+    }
+    return;
+}
 
+vector<string> SplitToolCppJieba::cut(string & str){
     /* 清洗 */
     auto it = str.begin();
     while(it != str.end()){
@@ -54,7 +62,7 @@ vector<string> SplitToolCppJieba::cut(string & str){
     
     /* 分词 */
     vector<string> words; 
-    jieba.Cut(str, words);
+    _pJieba->Cut(str, words);
 
     return words;
 }
