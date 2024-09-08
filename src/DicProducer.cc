@@ -2,14 +2,15 @@
 #include "../include/DicProducer.h"
 #include "../include/SplitTool.h"
 
-#include <cctype>
-#include <cstdio>
+#include <stdio.h>
+#include <ctype.h>
+#include <dirent.h>
+#include <string.h>
+#include <linux/limits.h>
+
 #include <iostream>
 /* using std::cout; */
 /* using std::endl; */
-#include <dirent.h>
-#include <string.h>
-
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
