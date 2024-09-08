@@ -32,7 +32,7 @@ using std::ostringstream;
 DicProducer::DicProducer(std::string, SplitTool* tool) 
     : _cuttor(tool)
 {
-    getFiles(Configuration::getInstance()->getConfigMap()["files_path"]);
+    getFiles(Configuration::getInstance()->getConfigMap()["path_yuliao"]);
     buildFreq();
     buildDict();
     createIndex();
@@ -81,12 +81,12 @@ void DicProducer::buildDict(){
     string word;
     set<string> stop_words;
 
-    ifstream ifs_en(Configuration::getInstance()->getConfigMap()["stop_words_en"]);
+    ifstream ifs_en(Configuration::getInstance()->getConfigMap()["path_stop_words_en"]);
     while(ifs_en >> word){
         stop_words.insert(word);
     }
     ifs_en.close();
-    ifstream ifs_zh(Configuration::getInstance()->getConfigMap()["stop_words_en"]);
+    ifstream ifs_zh(Configuration::getInstance()->getConfigMap()["path_stop_words_zh"]);
     while(ifs_zh >> word){
         stop_words.insert(word);
     }
@@ -116,7 +116,7 @@ void DicProducer::createIndex(){
 
 void DicProducer::store(){
     /* store "dict.dat" */{
-        ofstream ofs(Configuration::getInstance()->getConfigMap()["dict.dat"]);    
+        ofstream ofs(Configuration::getInstance()->getConfigMap()["path_dict.dat"]);    
         if(!ofs){
             std::cerr << "ifstream open file failed!" << std::endl;
             return;
@@ -128,7 +128,7 @@ void DicProducer::store(){
     }
 
     /* store "dictindex.dat" */{
-        ofstream ofs(Configuration::getInstance()->getConfigMap()["dictindex.dat"]);
+        ofstream ofs(Configuration::getInstance()->getConfigMap()["path_dictindex.dat"]);
         if(!ofs){
             std::cerr << "ifstream open file failed!" << std::endl;
             return;
