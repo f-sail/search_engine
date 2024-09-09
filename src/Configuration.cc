@@ -2,6 +2,8 @@
 
 #include "../include/Configuration.h"
 
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 #include <limits.h>
 #include <string.h>
@@ -18,8 +20,14 @@ Configuration * Configuration::_pInstance = nullptr;
 Configuration::Configuration()
 : _config_file_path("../conf/myconf.conf")
 {
+    chdir();
     ifstream ifs(_config_file_path);
     /* 读配置文件，并把键值对存到map里 */
+    if(!ifs){                                                  
+        perror("ifstream open file failed!");
+        return;
+    }
+
     string line;
     while(getline(ifs,line)){
         size_t pos = string::npos;
@@ -55,7 +63,7 @@ void Configuration::chdir(){
             break;
         }
     }
-    printf("path = %s\n", path);
+    /* printf("path = %s\n", path); */
     if(::chdir(path) != 0){
         std::cerr << "无法改变工作目录\n";
         return;

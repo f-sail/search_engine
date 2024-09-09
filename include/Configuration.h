@@ -9,7 +9,6 @@ public:
     Configuration();
     ~Configuration();
     static Configuration * getInstance();
-    std::string& getAbsolutePath();
     std::map<std::string,std::string>& getConfigMap();
     void chdir();
 private:

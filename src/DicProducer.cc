@@ -1,6 +1,7 @@
 #include "../include/Configuration.h"
 #include "../include/DicProducer.h"
 #include "../include/SplitTool.h"
+#include "../include/DirScanner.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -31,9 +32,14 @@ using std::ostringstream;
 
 
 DicProducer::DicProducer(std::string, SplitTool* tool) 
-    : _cuttor(tool)
+: _cuttor(tool)
 {
-    getFiles(Configuration::getInstance()->getConfigMap()["path_yuliao"]);
+    {
+        DirScanner ds;
+        ds.traverse(Configuration::getInstance()->getConfigMap()["path_yuliao/"]);
+        _files = ds.getFiles();
+    }
+    //getFiles(Configuration::getInstance()->getConfigMap()["path_yuliao/"]);
     buildFreq();
     buildDict();
     createIndex();
@@ -146,25 +152,25 @@ void DicProducer::store(){
     return;
 }
 
-void DicProducer::getFiles(const std::string& dir){
-    DIR * dirp = opendir(dir.data());
-    if(nullptr == dirp){
-        // todo
-        perror("opendir failed");
-        return;
-    }
-    struct dirent * entry;
-    while((entry = readdir(dirp)) != nullptr){
-        if(strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")){
-            if(entry->d_type == DT_DIR){
-                getFiles(dir + entry->d_name + '/');
-            }else if(entry->d_type == DT_REG){
-                _files.push_back(dir + entry->d_name);
-            }
-        }
-    }
-    return;
-}
+//void DicProducer::getFiles(const std::string& dir){
+//    DIR * dirp = opendir(dir.data());
+//    if(nullptr == dirp){
+//        // todo
+//        perror("opendir failed");
+//        return;
+//    }
+//    struct dirent * entry;
+//    while((entry = readdir(dirp)) != nullptr){
+//        if(strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")){
+//            if(entry->d_type == DT_DIR){
+//                getFiles(dir + entry->d_name + '/');
+//            }else if(entry->d_type == DT_REG){
+//                _files.push_back(dir + entry->d_name);
+//            }
+//        }
+//    }
+//    return;
+//}
 
 size_t DicProducer::nBytesCode(const char ch){
     if(ch & (1 << 7)){

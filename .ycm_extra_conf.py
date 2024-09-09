@@ -93,7 +93,7 @@ flags = [
 '/usr/local/include',
 
 '-I',
-'../include',
+'/home/sail/vim/CodePlay/search_engine/include',
 
 
 # Termux

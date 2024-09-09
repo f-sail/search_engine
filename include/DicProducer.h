@@ -17,7 +17,7 @@ public:
     void createIndex();
     void store();
 private:
-    void getFiles(const std::string&);
+    //void getFiles(const std::string&);
     size_t nBytesCode(const char ch);
 private:
     std::vector<std::string> _files;
