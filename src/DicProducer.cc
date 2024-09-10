@@ -55,9 +55,10 @@ DicProducer::~DicProducer(){
 }
 
 void DicProducer::buildFreq(){
+    std::cout << ">> Loading...\n";
     for(const string & path: _files){
-        /* std::cout << "path = " << path << "\n"; */
         ifstream ifs(path);
+        std::cout << " |" << path << "\n";
         if(!ifs){
             std::cerr << "ifstream open file failed!" << std::endl;
             return;
@@ -81,6 +82,7 @@ void DicProducer::buildFreq(){
         }
         ifs.close();
     }
+    std::cout << ">> Loading completed!\n";
     return;
 }
 
@@ -122,20 +124,28 @@ void DicProducer::createIndex(){
 }
 
 void DicProducer::store(){
+    std::cout << ">> Storing...\n";
     /* store "dict.dat" */{
-        ofstream ofs(Configuration::getInstance()->getConfigMap()["path_dict.dat"]);    
+        string path = Configuration::getInstance()->getConfigMap()["path_dict.dat"];
+        std::cout << " |" << path << "\n";
+        ofstream ofs(path);    
         if(!ofs){
             std::cerr << "ifstream open file failed!" << std::endl;
             return;
         }
         for(const std::pair<std::string, int>& pair: _dict){
+            //if(pair.first == " "){
+            //    continue;
+            //}
             ofs << pair.first << " " << pair.second << "\n";
         }
         ofs.close();
     }
 
     /* store "dictindex.dat" */{
-        ofstream ofs(Configuration::getInstance()->getConfigMap()["path_dictindex.dat"]);
+        string path = Configuration::getInstance()->getConfigMap()["path_dictindex.dat"];
+        std::cout << " |" << path << "\n";
+        ofstream ofs(path);
         if(!ofs){
             std::cerr << "ifstream open file failed!" << std::endl;
             return;
@@ -149,6 +159,7 @@ void DicProducer::store(){
         }
         ofs.close();
     }
+    std::cout << ">> Storing completed!\n";
     return;
 }
 
