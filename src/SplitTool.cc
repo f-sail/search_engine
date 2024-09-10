@@ -22,9 +22,7 @@ using std::ostringstream;
 
 
 
-SplitTool::~SplitTool(){
-
-}
+SplitTool::~SplitTool(){}
 
 SplitToolCppJieba::SplitToolCppJieba()
 : _pJieba(nullptr)
@@ -42,6 +40,7 @@ SplitToolCppJieba::SplitToolCppJieba()
 SplitToolCppJieba::~SplitToolCppJieba(){
     if(_pJieba){
         delete _pJieba;
+        _pJieba = nullptr;
     }
     return;
 }

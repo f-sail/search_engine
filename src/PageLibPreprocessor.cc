@@ -10,10 +10,13 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
 
 #define TOPN 5
 #define BUFF_SIZE 4096
 
+using std::pow;
+using std::sqrt;
 using std::cout;
 using std::endl;
 using std::string;
@@ -34,6 +37,7 @@ PageLibPreprocessor::~PageLibPreprocessor(){
     storeOnDisk();
     if(_wordCutter){
         delete _wordCutter;
+        _wordCutter = nullptr;
     }
     return;
 }
@@ -90,6 +94,7 @@ void PageLibPreprocessor::buildInvertIndexMap(){
             _invertIndexLib[word].emplace(docid, w);
         }
     }
+    normalization();
     return;
 }
 
@@ -208,6 +213,30 @@ void PageLibPreprocessor::wordStatistics(int docid, string content){
             _wordsInfo[word].docTF[docid] = 1;
         }else{
             ++_wordsInfo[word].docTF[docid];
+        }
+    }
+    return;
+}
+
+void PageLibPreprocessor::normalization(){
+    std::unordered_map<int, double> total_weights;
+    /* 计算总权重 */
+    for(const auto& pair: _invertIndexLib){
+        for(const auto& p: pair.second){
+            if(total_weights.count(p.first)){
+                total_weights[p.first] += pow(p.second, 2);
+            }else{
+                total_weights[p.first] = pow(p.second, 2);
+            }
+        }
+    }
+    /* 计算归一化权重 */
+    for(auto& pair: _invertIndexLib){
+        for(auto& p: pair.second){
+            int docid = p.first;
+            double weight = p.second / sqrt(total_weights[p.first]);            
+            pair.second.erase(p);
+            pair.second.emplace(docid, weight);
         }
     }
     return;

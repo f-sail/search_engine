@@ -41,6 +41,7 @@ Configuration::Configuration()
 Configuration::~Configuration(){
     if(_pInstance){
         delete _pInstance;
+        _pInstance = nullptr;
     }
     return;
 }

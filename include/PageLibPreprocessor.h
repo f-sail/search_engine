@@ -19,6 +19,11 @@ class PageLibPreprocessor{
         int DF;
         std::unordered_map<int, int> docTF; // docTF<docid, TF>
     };
+    //struct Weights{
+    //    int docid;
+    //    double weight;
+    //    bool operator<(const Weights&);
+    //};
 public:
     PageLibPreprocessor();
     ~PageLibPreprocessor();
@@ -30,6 +35,7 @@ private:
     bool isSimilar(uint64_t);
     void wordStatistics(int, std::string);
     void analyze(const std::string &, std::ofstream&, simhash::Simhasher&);
+    void normalization();
 private:
     std::vector<uint64_t> _pageList;
     std::map<int, std::pair<int, int>> _offsetLib;

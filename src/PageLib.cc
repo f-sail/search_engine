@@ -23,6 +23,7 @@ PageLib::PageLib()
 PageLib::~PageLib(){
     if(_pDirScanner){
         delete _pDirScanner;
+        _pDirScanner = nullptr;
     }
     return;
 }

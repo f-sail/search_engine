@@ -50,6 +50,7 @@ DicProducer::DicProducer(std::string, SplitTool* tool)
 DicProducer::~DicProducer(){
     if(_cuttor){
         delete _cuttor;
+        _cuttor = nullptr;
     }
     return;
 }

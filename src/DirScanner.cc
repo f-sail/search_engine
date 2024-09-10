@@ -7,8 +7,7 @@
 
 #include <iostream>
 
-DirScanner::DirScanner(){
-}
+DirScanner::DirScanner(){}
 
 std::vector<std::string>& DirScanner::getFiles(){
     return _files;
