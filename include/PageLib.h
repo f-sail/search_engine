@@ -10,8 +10,8 @@ class DirScanner;
 class PageLib{
     struct RSSIteam{
         std::string title;
-        std::string link;
-        std::string description;
+        std::string url;
+        std::string content;
     };
 public:
     PageLib();

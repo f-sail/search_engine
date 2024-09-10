@@ -46,11 +46,11 @@ void PageLib::store(){
         for(const RSSIteam& rss: _pages){
             std::pair<int, int> pair;
             pair.first = ofs.tellp();
-            ofs << "<doc>\n\t<docid>" << ++num
-                << "</docid>\n\t<title>" << rss.title
-                << "</title>\n\t<link>" << rss.link
-                << "</link>\n\t<description>" << rss.description
-                << "</description>";
+            ofs << "<doc>\n\t<docid>"       << ++num
+                << "</docid>\n\t<url>"      << rss.url
+                << "</url>\n\t<title>"      << rss.title
+                << "</title>\n\t<content>"  << rss.content
+                << "</content>\n</doc>";
             pair.second = ofs.tellp();
             ofs << "\n";
             _offsetLib.emplace(num, pair);
@@ -59,7 +59,7 @@ void PageLib::store(){
     }
    
     /* offsetlib */{
-        string path = Configuration::getInstance()->getConfigMap()["path_offsetlib.dat"];
+        string path = Configuration::getInstance()->getConfigMap()["path_offset.dat"];
         cout << " |" << path << "\n";
         ofstream ofs(path);
         for(const std::pair<int, std::pair<int,int>>& pair: _offsetLib){
@@ -99,17 +99,17 @@ void PageLib::read(const std::string& filepath){
         if(nullptr == tmp_itemNode){
             return;
         }
-        rss.link = tmp_itemNode->GetText();
+        rss.url = tmp_itemNode->GetText();
        
         /* rss.description = itemNode->FirstChildElement("description")->GetText(); */
         tmp_itemNode = itemNode->FirstChildElement("description");
         if(nullptr == tmp_itemNode){
             return;
         }
-        rss.description = tmp_itemNode->GetText();
+        rss.content = tmp_itemNode->GetText();
        
         std::regex reg("<[^>]+>");
-        rss.description = regex_replace(rss.description, reg, "");
+        rss.content = regex_replace(rss.content, reg, "");
 
         _pages.emplace_back(std::move(rss));
         itemNode = itemNode->NextSiblingElement("item");

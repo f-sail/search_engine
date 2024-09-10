@@ -6,7 +6,7 @@ dict := bin/dict.exe
 objs_dict := bin/Configuration.o bin/DicProducer.o bin/SplitTool.o  bin/DirScanner.o bin/_dict.o
 
 page_lib := bin/page_lib.exe
-objs_page_lib := bin/Configuration.o bin/DirScanner.o bin/PageLib.o bin/tinyxml2.o bin/_page_lib.o
+objs_page_lib := bin/Configuration.o  bin/DirScanner.o  bin/PageLib.o  bin/PageLibPreprocessor.o  bin/SplitTool.o  bin/tinyxml2.o  bin/_page_lib.o
 
 
 $(.o):$(.cc)
