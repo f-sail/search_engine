@@ -135,9 +135,9 @@ void DicProducer::store(){
             return;
         }
         for(const std::pair<std::string, int>& pair: _dict){
-            //if(pair.first == " "){
-            //    continue;
-            //}
+            if(pair.first == " "){
+                continue;
+            }
             ofs << pair.first << " " << pair.second << "\n";
         }
         ofs.close();
@@ -152,6 +152,9 @@ void DicProducer::store(){
             return;
         }
         for(const std::pair<std::string, set<int>>& pair: _index){
+            if(pair.first == " "){
+                continue;
+            }
             ofs << pair.first << " ";
             for(int i: pair.second){
                 ofs << i << " ";

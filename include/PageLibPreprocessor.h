@@ -2,6 +2,7 @@
 #define __PAGELIBPREPROCESSOR_H__
 
 #include <map>
+#include <pthread.h>
 #include <set>
 #include <string>
 #include <vector>
@@ -27,6 +28,8 @@ class PageLibPreprocessor{
 public:
     PageLibPreprocessor();
     ~PageLibPreprocessor();
+    PageLibPreprocessor(const PageLibPreprocessor&) = delete;
+    PageLibPreprocessor& operator=(const PageLibPreprocessor&) = delete;
     void cutRedundantPage();
     void buildInvertIndexMap();
     void storeOnDisk();

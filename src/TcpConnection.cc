@@ -1,5 +1,7 @@
 #include "../include/TcpConnection.h"
 #include "../include/EventLoop.h"
+#include "../include/log4cpp.h"
+#include <cstdarg>
 #include <cstdio>
 #include <iostream>
 #include <sstream>
@@ -19,7 +21,13 @@ TcpConnection::TcpConnection(int fd, EventLoop *loop)
 {}
 
 void TcpConnection::send(const string& msg){
-    _sockIO.write(msg.c_str(), msg.size());
+    std::cout << " msg = " << msg <<"\n";
+    size_t ret = _sockIO.write(msg.c_str(), msg.size());
+    if(ret != msg.size()){
+        LOG_WARN(" write count != msg.size()");
+    }else{
+        std::cout << "size = " << msg.size() << "\n";
+    }
     return;
 }
 
@@ -30,10 +38,9 @@ void TcpConnection::sendInLoop(const string& msg){
     return;
 }
 
-string TcpConnection::receive(){
-    char buff[BUFF_SIZE] = {0};
-    _sockIO.readTLV(buff, sizeof(buff));
-    return string(buff);
+TLV TcpConnection::receive(){
+    TLV msg(_sockIO.readTLV());
+    return msg;
 }
 
 bool TcpConnection::isClosed() const{

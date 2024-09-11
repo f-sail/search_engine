@@ -1,6 +1,7 @@
 #ifndef __TCPCONNECTION_H__
 #define __TCPCONNECTION_H__
 
+#include "TLV.h"
 #include "Socket.h"
 #include "SocketIO.h"
 #include "InetAddress.h"
@@ -20,10 +21,12 @@ class TcpConnection
     using TcpConnectionCallback = std::function<void(const TcpConnectionPtr &)>;
 public:
     explicit TcpConnection(int fd, EventLoop *loop);
+    TcpConnection(const TcpConnection&) = delete;
+    TcpConnection &operator=(const TcpConnection&) = delete;
     ~TcpConnection() = default;
     void send(const std::string &msg);
     void sendInLoop(const std::string &msg);
-    std::string receive();
+    TLV receive();
     //判断连接是否断开（被动断开）
     bool isClosed() const;
 
@@ -34,7 +37,6 @@ private:
     //获取本端地址与对端地址
     InetAddress getLocalAddr();
     InetAddress getPeerAddr();
-
 public:
     //注册三个回调
     void setNewConnectionCallback(const TcpConnectionCallback &cb);

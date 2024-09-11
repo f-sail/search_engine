@@ -1,6 +1,6 @@
 #include "../include/log4cpp.h"
 #include "../include/SocketIO.h"
-/* #include "../include/TLV.h" */
+#include "../include/TLV.h"
 
 #include <asm-generic/socket.h>
 /* #include <stdio.h> */
@@ -8,6 +8,10 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+
+using std::cout;
+
+#define BUFF_SIZE 65535
 
 SocketIO::SocketIO(int fd)
 : _fd(fd)
@@ -38,44 +42,54 @@ int SocketIO::read(char *buf, size_t size){
     return count;
 }
 
-Type SocketIO::readTLV(char *buf, size_t size){
-    LOG_DEBUG("===========in readTLV==============");
-    Type type;
-    size_t length;
+TLV SocketIO::readTLV(){
+    /* LOG_DEBUG("===========in readTLV=============="); */
+    TLV msg;
 
-    int ret = readT(&type, sizeof(type));
+    int ret = readT(&msg.type, sizeof(msg.type));
     if(-1 == ret){
-        return TYPE_ERROR;
+        msg.type = TYPE_ERROR;
+        return msg;
     }else if(0 == ret){
-        return TYPE_DISCONNECT;
+        msg.type = TYPE_DISCONNECT;
+        return msg;
     }
 
-    ret = readL(&length, sizeof(length));
+    ret = readL(&msg.len, sizeof(msg.len));
     if(-1 == ret){
-        return TYPE_ERROR;
+        msg.type = TYPE_ERROR;
+        return msg;
     }else if(0 == ret){
-        return TYPE_DISCONNECT;
+        msg.type = TYPE_DISCONNECT;
+        return msg;
+    }
+    
+    if(0 == msg.len){
+        msg.type = TYPE_EMPTY;
+        return msg;
     }
 
-    ret = readV(buf, length);
+    ret = readV(msg.value, msg.len);
     if(-1 == ret){
-        return TYPE_ERROR;
+        msg.type = TYPE_ERROR;
+        return msg;
     }else if(0 == ret){
-        return TYPE_DISCONNECT;
+        msg.type = TYPE_DISCONNECT;
+        return msg;
     }
 
-    return type;
+    return msg;
 }
 
 int SocketIO::write(const char* buf, size_t size){
     size_t count = 0;
     while(size > count){
-        int ret = ::write(_fd, buf, size - count);
+        int ret = ::send(_fd, buf, size - count, MSG_NOSIGNAL);
         if(-1 == ret){
             if(EINTR == errno){
                 continue;
             }else{
-                perror("write error -1");
+                LOG_ERROR("write error -1");
                 return -1;
             }
         }else if(0 == ret){
@@ -89,7 +103,7 @@ int SocketIO::write(const char* buf, size_t size){
 }
 
 int SocketIO::readT(Type* ptype, size_t size){
-    LOG_DEBUG("===========in readT==============");
+    /* LOG_DEBUG("===========in readT=============="); */
     while(1){
         int ret = recv(_fd, ptype, size, MSG_WAITALL);
         if(size == ret){
@@ -105,10 +119,10 @@ int SocketIO::readT(Type* ptype, size_t size){
     }
 }
 
-int SocketIO::readL(size_t* plength, size_t size){
-    LOG_DEBUG("===========in readL==============");
+int SocketIO::readL(size_t* plen, size_t size){
+    /* LOG_DEBUG("===========in readL=============="); */
     while(1){
-        int ret = recv(_fd, plength, size, MSG_WAITALL);
+        int ret = recv(_fd, plen, size, MSG_WAITALL);
         if(size == ret){
             return size;
         }else if(0 == ret){
@@ -121,12 +135,14 @@ int SocketIO::readL(size_t* plength, size_t size){
         }
     }
 }
-int SocketIO::readV(char* pvalue, size_t size){
-    LOG_DEBUG("===========in readV==============");
+int SocketIO::readV(string &value, size_t size){
+    /* LOG_DEBUG("===========in readV=============="); */
+    std::cout << "size = " << size << "\n";
+    char buff[BUFF_SIZE] = {0};
     while(1){
-        std::cout <<"size = " <<  size << std::endl;
-        int ret = recv(_fd, pvalue, size, MSG_WAITALL);
+        int ret = ::recv(_fd, buff, size, MSG_WAITALL);
         if(size == ret){
+            value = std::move(buff);
             return size;
         }else if(0 == ret){
             return 0;

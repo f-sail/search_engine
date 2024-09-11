@@ -19,6 +19,8 @@ public:
     void create();
     void store();
 private:
+    PageLib(const PageLib&) = delete;
+    PageLib& operator=(const PageLib&) = delete;
     void read(const std::string& filepath);
 private:
     DirScanner* _pDirScanner;

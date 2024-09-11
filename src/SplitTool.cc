@@ -65,3 +65,18 @@ vector<string> SplitToolCppJieba::cut(string & str){
 
     return words;
 }
+
+size_t SplitTool::nBytesCode(const char ch){
+    if(ch & (1 << 7)){
+        int nBytes = 1;
+        for(int idx = 0; idx != 6; ++idx){
+            if(ch & (1 << (6 - idx))){
+                ++nBytes;
+            }else{
+                break;
+            }
+        }
+        return nBytes;
+    }
+    return 1;
+}

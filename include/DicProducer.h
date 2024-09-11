@@ -11,6 +11,8 @@ class SplitTool;
 class DicProducer{
 public:
     DicProducer(std::string, SplitTool* tool);
+    DicProducer(const DicProducer&) = delete;
+    DicProducer &operator=(const DicProducer&) = delete;
     ~DicProducer();
     void buildFreq();
     void buildDict();

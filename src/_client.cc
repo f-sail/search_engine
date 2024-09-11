@@ -1,4 +1,5 @@
 #include "../include/TLV.h"
+#include "../include/json.hpp"
 
 #include <ostream>
 #include <unistd.h>
@@ -43,22 +44,24 @@ void test() {
 	printf("conn has connected!...\n");
 
 	while(1){
-		string line;
-		getline(cin, line);
+        TLV msg;
+		getline(cin, msg.value);
 		cout << ">> pls input some message:";
 		//1. 客户端先发数据 
-        std::ostringstream oss;
-        Type type = TYPE_MESSAGE;
-        size_t length = line.size();
-
-        send(clientfd, &type, sizeof(type), 0);
-        send(clientfd, &length, sizeof(length), 0);
-		send(clientfd, line.c_str(), line.size(), 0);
-		char buff[128] = {0};
+        msg.type = TYPE_RECOMMEND;
+        msg.len = msg.value.size();
+        /* cout << "type = " << msg.type << "\n"; */
+        /* cout <<"len = " <<  msg.len << "\n"; */
+        /* cout <<"value = " <<  msg.value << "\n"; */
+        /* send(clientfd, &msg, sizeof(msg), 0); */
+        send(clientfd, &msg.type, sizeof(msg.type), 0);
+        send(clientfd, &msg.len, sizeof(msg.len), 0);
+        send(clientfd, msg.value.data(), msg.len, 0);
+		
+        char buff[65535] = {0};
 		recv(clientfd, buff, sizeof(buff), 0);
 		printf("recv msg from server: %s\n", buff);
 	}
-
 	close(clientfd);
 } 
  

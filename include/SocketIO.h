@@ -10,12 +10,12 @@ public:
     ~SocketIO();
     explicit SocketIO(int fd);
     int read(char *buf, size_t size);
-    Type readTLV(char *buf, size_t size);
+    TLV readTLV();
     int write(const char *buf, size_t size);
 private:
     int readT(Type* ptype, size_t size);
     int readL(size_t* plength, size_t size);
-    int readV(char* pvalue, size_t size);
+    int readV(std::string &value, size_t size);
 private:
     int _fd;
 };

@@ -63,7 +63,7 @@ void EventLoop::waitEpollFd(){
         return;
     }
     else if(0 == nready){
-        LOG_INFO("epoll_wait timeout!!!")
+        /* LOG_INFO("epoll_wait timeout!!!") */
     }else{
         //需要考虑vector，也就是_evtList的扩容问题(1024)
         if((int)_evtList.size() == nready){
@@ -144,7 +144,7 @@ int EventLoop::createEpollFd(){
     int fd = epoll_create(10);
     if(fd < 0){
         LOG_ERROR("createEpollFd failed");
-        perror("createEpollFd");
+        /* perror("createEpollFd"); */
         return -1;
     }
     return fd;
@@ -159,7 +159,7 @@ void EventLoop::addEpollReadFd(int fd){
     int ret = epoll_ctl(_epfd, EPOLL_CTL_ADD, fd, &evt);
     if(ret < 0){
         LOG_ERROR("addEpollFd failed");
-        perror("addEpollReadFd");
+        /* perror("addEpollReadFd"); */
         return;
     }
 }
@@ -173,7 +173,7 @@ void EventLoop::delEpollReadFd(int fd){
     int ret = epoll_ctl(_epfd, EPOLL_CTL_DEL, fd, &evt);
     if(ret < 0){
         LOG_ERROR("delEpollFd failed");
-        perror("delEpollReadFd");
+        /* perror("delEpollReadFd"); */
         return;
     }
 

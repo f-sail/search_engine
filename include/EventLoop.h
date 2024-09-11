@@ -49,13 +49,11 @@ public:
     //将文件描述符从红黑树上取消监听
     void delEpollReadFd(int fd);
 
-public:
     //注册三个事件（起到桥梁作用，目的是为了传递给TcpConnection）
     void setNewConnectionCallback(TcpConnectionCallback &&cb);
     void setMessageCallback(TcpConnectionCallback &&cb);
     void setCloseCallback(TcpConnectionCallback &&cb);
 
-public:
     //创建用于通知的文件描述符
     int createEventFd();
     //封装read
@@ -81,8 +79,6 @@ private:
     TcpConnectionCallback _onNewConnection; //连接建立
     TcpConnectionCallback _onMessage;       //消息到达
     TcpConnectionCallback _onClose;         //连接断开
-
-
 };
 
 #endif

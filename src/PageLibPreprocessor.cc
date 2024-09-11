@@ -1,16 +1,17 @@
 #include "../include/PageLibPreprocessor.h"
-#include "../include/Configuration.h"
 #include "../include/simhash/Simhasher.hpp"
-#include "../include/tinyxml2.h"
+#include "../include/Configuration.h"
 #include "../include/SplitTool.h"
+#include "../include/tinyxml2.h"
 
 #include <bits/getopt_core.h>
-#include <cmath>
 #include <cstdlib>
+#include <cmath>
+
+#include <unordered_map>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <unordered_map>
 
 #define TOPN 5
 #define BUFF_SIZE 4096
