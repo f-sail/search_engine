@@ -35,8 +35,13 @@ std::string KeyRecommander::doQuery(){
     int n = RESP_NUM;
     nlohmann::json json;
     while(_prique.size() && n > 0){
-        json.emplace_back(_prique.top()._word);
-        std::cout << _prique.top()._dist << "\n";
+        string word = _prique.top()._word;
+        if(json.count(word)){
+        _prique.pop();
+            continue;
+        }
+        json.emplace_back(std::move(word));
+        /* std::cout << _prique.top()._dist << " "; */
         _prique.pop();
         --n;
     }

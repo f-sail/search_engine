@@ -1,5 +1,5 @@
 CC := g++
-.h := include/%.h include/%.hpp
+.h := include/%.h
 .o := bin/%.o
 .cc:= src/%.cc
 

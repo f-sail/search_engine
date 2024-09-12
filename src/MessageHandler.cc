@@ -11,7 +11,7 @@ MessageHandler::MessageHandler(const TLV &msg, const TcpConnectionPtr &conn)
 {}
 
 void MessageHandler::process(){
-    LOG_INFO("in process");
+    /* LOG_INFO("in process"); */
     switch(_msg.type){
         case TYPE_ERROR:
             _conn->sendInLoop(error());

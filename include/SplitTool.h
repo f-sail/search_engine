@@ -8,12 +8,20 @@ namespace cppjieba{
     class Jieba;
 };
 
+struct WebPage{
+    std::string docid;
+    std::string url;
+    std::string title;
+    std::string content;
+};
+
 class SplitTool{
 public:
     SplitTool() = default;
     virtual ~SplitTool() = 0;
     virtual std::vector<std::string> cut(std::string &) = 0;
     static size_t nBytesCode(const char ch);
+    static WebPage rss(const std::string& doc);
 };
 
 

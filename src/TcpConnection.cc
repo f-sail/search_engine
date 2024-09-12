@@ -25,8 +25,6 @@ void TcpConnection::send(const string& msg){
     size_t ret = _sockIO.write(msg.c_str(), msg.size());
     if(ret != msg.size()){
         LOG_WARN(" write count != msg.size()");
-    }else{
-        std::cout << "size = " << msg.size() << "\n";
     }
     return;
 }

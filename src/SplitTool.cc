@@ -21,9 +21,46 @@ using std::istringstream;
 using std::ostringstream;
 
 
-
+/* SplitTool */
 SplitTool::~SplitTool(){}
 
+size_t SplitTool::nBytesCode(const char ch){
+    if(ch & (1 << 7)){
+        int nBytes = 1;
+        for(int idx = 0; idx != 6; ++idx){
+            if(ch & (1 << (6 - idx))){
+                ++nBytes;
+            }else{
+                break;
+            }
+        }
+        return nBytes;
+    }
+    return 1;
+}
+
+WebPage SplitTool::rss(const std::string& doc){
+    size_t pos_docid_begin = doc.find("<docid>") + strlen("<docid>");
+    size_t pos_docid_end = doc.find("</docid>");                                          
+    
+    size_t pos_url_begin = doc.find("<url>", pos_docid_end) + strlen("<url>");
+    size_t pos_url_end = doc.find("</url>");
+    
+    size_t pos_title_begin = doc.find("<title>", pos_url_end) + strlen("<title>");
+    size_t pos_title_end = doc.find("</title>");
+    
+    size_t pos_content_begin = doc.find("<content>", pos_title_end) + strlen("<content>");
+    size_t pos_content_end = doc.find("</content>");
+    
+    WebPage wp;
+    wp.docid = doc.substr(pos_docid_begin, pos_docid_end - pos_docid_begin);
+    wp.url = doc.substr(pos_url_begin, pos_url_end - pos_url_begin);
+    wp.title = doc.substr(pos_title_begin, pos_title_end - pos_title_begin);
+    wp.content = doc.substr(pos_content_begin, pos_content_end - pos_content_begin);
+    return wp;
+}
+
+/* SplitToolCppJieba */
 SplitToolCppJieba::SplitToolCppJieba()
 : _pJieba(nullptr)
 {
@@ -66,17 +103,3 @@ vector<string> SplitToolCppJieba::cut(string & str){
     return words;
 }
 
-size_t SplitTool::nBytesCode(const char ch){
-    if(ch & (1 << 7)){
-        int nBytes = 1;
-        for(int idx = 0; idx != 6; ++idx){
-            if(ch & (1 << (6 - idx))){
-                ++nBytes;
-            }else{
-                break;
-            }
-        }
-        return nBytes;
-    }
-    return 1;
-}

@@ -160,40 +160,40 @@ void PageLibPreprocessor::loadOffset(){
 }
 
 void PageLibPreprocessor::analyze(const string& doc, ofstream& ofs, simhash::Simhasher& simhasher){
-    size_t pos_docid_begin = doc.find("<docid>") + strlen("<docid>");
-    size_t pos_docid_end = doc.find("</docid>");
-    string docid(doc.substr(pos_docid_begin, pos_docid_end - pos_docid_begin));
-    
-    size_t pos_url_begin = doc.find("<url>", pos_docid_end) + strlen("<url>");
-    size_t pos_url_end = doc.find("</url>");
-    string url(doc.substr(pos_url_begin, pos_url_end - pos_url_begin));
-    
-    size_t pos_title_begin = doc.find("<title>", pos_url_end) + strlen("<title>");
-    size_t pos_title_end = doc.find("</title>");
-    string title(doc.substr(pos_title_begin, pos_title_end - pos_title_begin));
-    
-    size_t pos_content_begin = doc.find("<content>", pos_title_end) + strlen("<content>");
-    size_t pos_content_end = doc.find("</content>");
-    string content(doc.substr(pos_content_begin, pos_content_end - pos_content_begin));
-
+    //size_t pos_docid_begin = doc.find("<docid>") + strlen("<docid>");
+    //size_t pos_docid_end = doc.find("</docid>");
+    //string docid(doc.substr(pos_docid_begin, pos_docid_end - pos_docid_begin));
+    //
+    //size_t pos_url_begin = doc.find("<url>", pos_docid_end) + strlen("<url>");
+    //size_t pos_url_end = doc.find("</url>");
+    //string url(doc.substr(pos_url_begin, pos_url_end - pos_url_begin));
+    //
+    //size_t pos_title_begin = doc.find("<title>", pos_url_end) + strlen("<title>");
+    //size_t pos_title_end = doc.find("</title>");
+    //string title(doc.substr(pos_title_begin, pos_title_end - pos_title_begin));
+    //
+    //size_t pos_content_begin = doc.find("<content>", pos_title_end) + strlen("<content>");
+    //size_t pos_content_end = doc.find("</content>");
+    //string content(doc.substr(pos_content_begin, pos_content_end - pos_content_begin));
+    WebPage wp(SplitTool::rss(doc));
 
     uint64_t value = 0;
-    simhasher.make(content, TOPN, value);
+    simhasher.make(wp.content, TOPN, value);
     if(!isSimilar(value)){
         std::pair<int, int> pair;
         pair.first = ofs.tellp();
-        ofs << "<doc>\n\t<docid>"       << docid
-            << "</docid>\n\t<url>"      << url
-            << "</url>\n\t<title>"      << title
-            << "</title>\n\t<content>"  << content
+        ofs << "<doc>\n\t<docid>"       << wp.docid
+            << "</docid>\n\t<url>"      << wp.url
+            << "</url>\n\t<title>"      << wp.title
+            << "</title>\n\t<content>"  << wp.content
             << "</content>\n</doc>";
         pair.second = ofs.tellp();
         ofs << "\n";
         
         _pageList.push_back(value);
-        _new_offsetLib.emplace(atoi(docid.c_str()), pair);
+        _new_offsetLib.emplace(atoi(wp.docid.c_str()), pair);
 
-        wordStatistics(atoi(docid.c_str()),content);
+        wordStatistics(atoi(wp.docid.c_str()),wp.content);
     }
 
     return;
