@@ -67,9 +67,16 @@ void WebPages::Loading(){
             string word, docid, weight;
             iss >> word;
             while(iss >> docid >> weight){
-                _indexLib[word] = std::make_pair(std::stoi(docid), std::stod(weight));
+                _indexLib[word][stoi(docid)] = std::stod(weight);
             }
         }
         ifs.close();
+        for(auto a: _indexLib){
+            std::cout << a.first << "    ";
+            for(auto i: a.second){
+                std::cout << i.first << " " << i.second << "    ";
+            }
+            std::cout << "\n";
+        }
     }
 }

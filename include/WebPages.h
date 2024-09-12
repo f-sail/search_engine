@@ -25,7 +25,7 @@ private:
     SplitTool* _cutter;
     std::ifstream _ifsPage;
     std::unordered_map<int, std::pair<int, int>> _offsetLib;
-    std::unordered_map<std::string, std::pair<int, double>> _indexLib;
+    std::unordered_map<std::string, std::unordered_map<int, double>> _indexLib;
 };
 
 #endif
