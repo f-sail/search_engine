@@ -37,7 +37,9 @@ int main(int args, char *argv[]){
     Configuration::getInstance();
     Dictionary::getInstance();
     WebPageQuery::getInstance();
+    Redis::getInstance();
 
+    LOG_INFO("server ready!");
     //puts("================");
     //WebPageQuery::IndexTable table =  WebPageQuery::getInstance()->doQuery("平安泰达金融中心");
     //for(auto p: table){
@@ -47,7 +49,6 @@ int main(int args, char *argv[]){
     //    }
     //    cout << "\n";
     //}
-    puts(">> 服务器准备就绪...");
     
     /* cout << WebPageQuery::getInstance()->getPage(10) << "\n"; */
     /* WebPageQuery::getInstance()->getPage(10); */

@@ -39,6 +39,9 @@ int main(int argc, char *argv[]){
         msg.type = TYPE_SEARCH;
         msg.value = "第一班";
         msg.len = msg.value.size();
+/* int i = 0; */
+/* while(i++<1000){sendTLV(clientfd, msg);} */
+/* break; */
 
         sendTLV(clientfd, msg);
 	

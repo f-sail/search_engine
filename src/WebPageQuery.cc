@@ -137,5 +137,6 @@ void WebPageQuery::Loading(){
         }
         ifs.close();
     }
+    std::cout << ">> Loading comleted!\n";
     return;
 }
