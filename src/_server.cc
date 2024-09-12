@@ -1,5 +1,6 @@
 #include "../include/_server.h"
 
+#include <cwchar>
 #include <unistd.h>
 
 #include <iostream>
@@ -30,19 +31,34 @@ void startServer()
     server.start();
 }
 
-int main(int args, char *argv[]){
-    Configuration::getInstance()->chdir();
 
-puts("----");
+/* ================================ main ================================ */
+int main(int args, char *argv[]){
+    Configuration::getInstance();
     Dictionary::getInstance();
-puts("----");
-    WebPages::getInstance();
-puts("----");
+    WebPageQuery::getInstance();
+
+    //puts("================");
+    //WebPageQuery::IndexTable table =  WebPageQuery::getInstance()->doQuery("平安泰达金融中心");
+    //for(auto p: table){
+    //    cout << p.first << "      ";
+    //    for(auto i: p.second){
+    //        cout << i.first << " " << i.second << "    ";
+    //    }
+    //    cout << "\n";
+    //}
+    puts("================");
+    
+    /* cout << WebPageQuery::getInstance()->getPage(10) << "\n"; */
+    /* WebPageQuery::getInstance()->getPage(10); */
 
     startServer();
 
     return 0;
 }
+
+
+
 
 namespace CallBack{
 //连接建立的事件

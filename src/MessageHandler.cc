@@ -2,6 +2,7 @@
 #include "../include/EventLoop.h"
 #include "../include/MessageHandler.h"
 #include "../include/KeyRecommander.h"
+#include "../include/WebPageSercher.h"
 
 using std::string;
 
@@ -26,6 +27,7 @@ void MessageHandler::process(){
             _conn->sendInLoop(recommend());
             break;
         case TYPE_SEARCH:
+            _conn->sendInLoop(search());
             break;
         default:
             _conn->sendInLoop(other());
@@ -46,6 +48,10 @@ string MessageHandler::emptymsg(){
 }
 string MessageHandler::recommend(){
     return KeyRecommander(_msg.value).doQuery();
+}
+string MessageHandler::search(){
+    puts("///////////////////////////////////////////////////");
+    return WebPageSercher(_msg.value).doQuery();
 }
 string MessageHandler::other(){
     return "todo";

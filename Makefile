@@ -10,7 +10,7 @@ page_lib := bin/page_lib.exe
 objs_page_lib := bin/Configuration.o  bin/DirScanner.o  bin/PageLib.o  bin/PageLibPreprocessor.o  bin/SplitTool.o  bin/tinyxml2.o  bin/_page_lib.o
 
 server := bin/server.exe
-objs_server := bin/_server.o  bin/log4cpp.o  bin/Acceptor.o  bin/Configuration.o  bin/Dictionary.o  bin/EventLoop.o  bin/InetAddress.o  bin/KeyRecommander.o  bin/Socket.o  bin/SocketIO.o  bin/MessageHandler.o  bin/SplitTool.o  bin/TaskQueue.o  bin/TcpConnection.o  bin/TcpServer.o  bin/ThreadPool.o  bin/WebPages.o
+objs_server := bin/_server.o  bin/log4cpp.o  bin/Acceptor.o  bin/Configuration.o  bin/Dictionary.o  bin/EventLoop.o  bin/InetAddress.o  bin/KeyRecommander.o  bin/Socket.o  bin/SocketIO.o  bin/MessageHandler.o  bin/SplitTool.o  bin/TaskQueue.o  bin/TcpConnection.o  bin/TcpServer.o  bin/ThreadPool.o  bin/WebPageQuery.o  bin/WebPageSercher.o
 
 
 client := bin/client.exe

@@ -12,7 +12,7 @@
  #include "../include/TcpServer.h"
  #include "../include/ThreadPool.h"
  #include "../include/TLV.h"
- #include "../include/WebPages.h"
+ #include "../include/WebPageQuery.h"
 
 
 

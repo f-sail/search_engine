@@ -14,6 +14,7 @@ private:
     std::string disconnect();
     std::string emptymsg();
     std::string recommend();
+    std::string search();
     std::string other();
 private:
     TLV _msg;
