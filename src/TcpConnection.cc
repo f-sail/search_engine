@@ -21,7 +21,7 @@ TcpConnection::TcpConnection(int fd, EventLoop *loop)
 {}
 
 void TcpConnection::send(const string& msg){
-    std::cout << " msg = " << msg <<"\n";
+    /* std::cout << " msg = " << msg <<"\n"; */
     size_t ret = _sockIO.write(msg.c_str(), msg.size());
     if(ret != msg.size()){
         LOG_WARN(" write count != msg.size()");
@@ -69,14 +69,12 @@ InetAddress TcpConnection::getLocalAddr(){
 }
 
 /* 获取对端的网络地址信息 */
-InetAddress TcpConnection::getPeerAddr()
-{
+InetAddress TcpConnection::getPeerAddr(){
     struct sockaddr_in addr;
     socklen_t len = sizeof(struct sockaddr );
     //获取对端地址的函数getpeername
     int ret = getpeername(_sock.fd(), (struct sockaddr *)&addr, &len);
-    if(-1 == ret)
-    {
+    if(-1 == ret){
         perror("getpeername");
     }
 

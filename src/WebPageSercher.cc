@@ -42,7 +42,6 @@ std::string WebPageSercher::doQuery(){
         string doc(WebPageQuery::getInstance()->getPage(_pq.top()._docid));
         _pq.pop();
         jsonArr.emplace_back(doc); 
-        LOG_INFO(doc);
     }
     return jsonArr.dump();
 }

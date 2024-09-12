@@ -47,7 +47,7 @@ int main(int args, char *argv[]){
     //    }
     //    cout << "\n";
     //}
-    puts("================");
+    puts(">> 服务器准备就绪...");
     
     /* cout << WebPageQuery::getInstance()->getPage(10) << "\n"; */
     /* WebPageQuery::getInstance()->getPage(10); */
@@ -68,9 +68,8 @@ void onNewConnection(const TcpConnectionPtr &con){
 
 //消息达到
 void onMessage(const TcpConnectionPtr &con){
-/* void onMessage(const TcpConnectionPtr &con, ThreadPool &pool) */
     TLV msg(con->receive());
-    cout << ">>recv msg from client: " << msg.value << endl;
+    /* cout << ">>recv msg from client: " << msg.value << endl; */
     MessageHandler task(msg, con);
     gPool->addTask(std::bind(&MessageHandler::process, task));
 }

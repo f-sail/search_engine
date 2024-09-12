@@ -50,7 +50,6 @@ string MessageHandler::recommend(){
     return KeyRecommander(_msg.value).doQuery();
 }
 string MessageHandler::search(){
-    puts("///////////////////////////////////////////////////");
     return WebPageSercher(_msg.value).doQuery();
 }
 string MessageHandler::other(){

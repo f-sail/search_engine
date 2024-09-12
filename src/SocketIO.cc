@@ -137,7 +137,6 @@ int SocketIO::readL(size_t* plen, size_t size){
 }
 int SocketIO::readV(string &value, size_t size){
     /* LOG_DEBUG("===========in readV=============="); */
-    std::cout << "size = " << size << "\n";
     char buff[BUFF_SIZE] = {0};
     while(1){
         int ret = ::recv(_fd, buff, size, MSG_WAITALL);
