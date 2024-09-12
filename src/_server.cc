@@ -37,7 +37,6 @@ int main(int args, char *argv[]){
     Configuration::getInstance();
     Dictionary::getInstance();
     WebPageQuery::getInstance();
-    Redis::getInstance();
 
     LOG_INFO("server ready!");
     //puts("================");

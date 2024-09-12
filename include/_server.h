@@ -8,7 +8,6 @@
 #include "../include/Dictionary.h"
 #include "../include/EventLoop.h"
 #include "../include/MessageHandler.h"
-#include "../include/Redis.h"
 #include "../include/TcpConnection.h"
 #include "../include/TcpServer.h"
 #include "../include/ThreadPool.h"
