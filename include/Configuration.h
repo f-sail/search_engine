@@ -9,9 +9,9 @@ public:
     static Configuration * getInstance();
     std::map<std::string,std::string>& getConfigMap();
     void chdir();
+    ~Configuration();
 private:
     Configuration();
-    ~Configuration();
     Configuration(const Configuration&) = delete;
     Configuration &operator=(const Configuration&) = delete;
 private:

@@ -1,7 +1,4 @@
-#include "../include/Configuration.h"
-#include "../include/DirScanner.h"
-#include "../include/PageLib.h"
-#include "../include/PageLibPreprocessor.h"
+#include "../include/_page_lib.h"
 
 #include <iostream>
 using std::cout;

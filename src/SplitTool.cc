@@ -57,6 +57,7 @@ WebPage SplitTool::rss(const std::string& doc){
     wp.url = doc.substr(pos_url_begin, pos_url_end - pos_url_begin);
     wp.title = doc.substr(pos_title_begin, pos_title_end - pos_title_begin);
     wp.content = doc.substr(pos_content_begin, pos_content_end - pos_content_begin);
+
     return wp;
 }
 

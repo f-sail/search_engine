@@ -116,11 +116,11 @@ public:
     /*删除赋值运算符函数*/
     MyLogger &operator=(const MyLogger & rhs) = delete;
     static LogLevel toEnum(const string&);
+    /*析构函数*/
+    ~MyLogger(void);
 private:
     /*构造函数*/
     MyLogger(LogLevel logLevel, bool isCout, const string & filePath, const string & rollingPath);
-    /*析构函数*/
-    ~MyLogger(void);
     /*静态成员函数：用于销毁类实例*/
     static int destroyInstance(void);
 };

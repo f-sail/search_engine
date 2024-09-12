@@ -1,14 +1,4 @@
-#include "../include/log4cpp.h"
-
-#include "../include/Acceptor.h"
-#include "../include/Configuration.h"
-#include "../include/Dictionary.h"
-#include "../include/EventLoop.h"
-#include "../include/MessageHandler.h"
-#include "../include/TcpConnection.h"
-#include "../include/TcpServer.h"
-#include "../include/ThreadPool.h"
-#include "../include/TLV.h"
+#include "../include/_server.h"
 
 #include <unistd.h>
 
@@ -42,7 +32,13 @@ void startServer()
 
 int main(int args, char *argv[]){
     Configuration::getInstance()->chdir();
+
+puts("----");
     Dictionary::getInstance();
+puts("----");
+    WebPages::getInstance();
+puts("----");
+
     startServer();
 
     return 0;
