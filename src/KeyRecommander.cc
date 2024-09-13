@@ -1,7 +1,7 @@
 #include "../include/KeyRecommander.h"
 #include "../include/TcpConnection.h"
 #include "../include/Dictionary.h"
-
+#include "../include/Redis.h"
 #include "../include/json.hpp"
 
 #include <iostream>
@@ -24,6 +24,10 @@ KeyRecommander::~KeyRecommander(){
 }
 
 std::string KeyRecommander::doQuery(){
+    string str(Redis::getInstance()->getValue(_sought));
+    if(string() != str){
+        return str;
+    }
     vector<std::pair<string, int>> vec(Dictionary::getInstance()->doQuery(_sought));
     for(auto& pair: vec){
         CandidateResult cr;
@@ -45,6 +49,7 @@ std::string KeyRecommander::doQuery(){
         _prique.pop();
         --n;
     }
+    Redis::getInstance()->setKV(_sought, json.dump());
     return json.dump();
 }
 

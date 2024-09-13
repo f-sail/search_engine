@@ -2,10 +2,15 @@
 #define __REDIS_H__
 
 #include <hiredis/hiredis.h>
+#include <hiredis/read.h>
+#include <string>
 
 class Redis{
 public:
-    static redisContext* getInstance();
+    static Redis* getInstance();
+    void setKV(const std::string& key, const std::string& value);
+    std::string getValue(const std::string& key);
+    redisContext* ptr();
     ~Redis();
 private:
     Redis();
@@ -13,7 +18,8 @@ private:
     Redis& operator=(const Redis&) = delete;
 public:
 private:
-    static redisContext* _pInstance;
+    static Redis* _pInstance;
+    redisContext* _readisPtr;
 };
 
 

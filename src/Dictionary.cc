@@ -2,6 +2,7 @@
 #include "../include/log4cpp.h"
 #include "../include/Dictionary.h"
 #include "../include/SplitTool.h"
+#include "../include/Redis.h"
 
 #include <fstream>
 
@@ -10,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 
+
 using std::set;
 using std::string;
 using std::vector;
@@ -17,7 +19,6 @@ using std::ifstream;
 using std::istringstream;
 
 Dictionary* Dictionary::_pInstance = nullptr;
-
 
 Dictionary * Dictionary::getInstance(){
     if(!_pInstance){

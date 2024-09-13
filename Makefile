@@ -14,7 +14,7 @@ objs_server := bin/_server.o  bin/log4cpp.o  bin/Acceptor.o  bin/Configuration.o
 
 
 client := bin/client.exe
-objs_client := bin/_client.o
+objs_client := bin/_client.o  bin/SplitTool.o
 
 
 $(.o):$(.cc) $(.h)
