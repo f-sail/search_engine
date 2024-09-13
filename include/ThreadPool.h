@@ -1,6 +1,7 @@
 #ifndef __THREAD_POOL_H__
 #define __THREAD_POOL_H__
 
+#include "../include/Cache.h"
 #include "../include/TaskQueue.h"
 
 #include <thread>

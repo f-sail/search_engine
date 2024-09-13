@@ -16,7 +16,7 @@ public:
 private:
     void buildPriorityQueue();
 private:
-    std::string _string;
+    std::string _sought;
     WebPageQuery::IndexTable _table;
     std::priority_queue<CosineValue> _pq;
 };

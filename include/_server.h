@@ -4,6 +4,7 @@
 #include "../include/log4cpp.h"
 
 #include "../include/Acceptor.h"
+#include "../include/Cache.h"
 #include "../include/Configuration.h"
 #include "../include/Dictionary.h"
 #include "../include/EventLoop.h"

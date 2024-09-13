@@ -1,6 +1,7 @@
 #include "../include/WebPageSercher.h"
 #include "../include/json.hpp"
 #include "../include/log4cpp.h"
+#include "../include/Cache.h"
 
 #include <cmath>
 
@@ -27,8 +28,8 @@ public:
 
 
 WebPageSercher::WebPageSercher(const std::string& key)
-: _string(key)
-, _table(WebPageQuery::getInstance()->doQuery(_string))
+: _sought(key)
+, _table(WebPageQuery::getInstance()->doQuery(_sought))
 {
     buildPriorityQueue();
     return;
@@ -37,12 +38,21 @@ WebPageSercher::WebPageSercher(const std::string& key)
 WebPageSercher::~WebPageSercher(){}
 
 std::string WebPageSercher::doQuery(){
+    /* 查缓存 */
+    std::thread::id tid(std::this_thread::get_id());
+    Cache* cache = CacheManager::getInstance()->get(tid);
+    string ret(cache->get(_sought));
+    if(string() != ret){
+        return ret;
+    }
+
     nlohmann::json jsonArr;
     while(_pq.size()){
         string doc(WebPageQuery::getInstance()->getPage(_pq.top()._docid));
         _pq.pop();
         jsonArr.emplace_back(doc); 
     }
+    cache->put(_sought, jsonArr);   // 存入缓存
     return jsonArr.dump();
 }
 

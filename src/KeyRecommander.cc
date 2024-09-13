@@ -1,11 +1,13 @@
 #include "../include/KeyRecommander.h"
 #include "../include/TcpConnection.h"
 #include "../include/Dictionary.h"
+#include "../include/Cache.h"
 
 #include "../include/json.hpp"
 
 #include <iostream>
 #include <algorithm>
+#include <thread>
 #include <vector>
 
 #define RESP_NUM 10
@@ -24,6 +26,13 @@ KeyRecommander::~KeyRecommander(){
 }
 
 std::string KeyRecommander::doQuery(){
+    std::thread::id tid(std::this_thread::get_id());
+    Cache* cache = CacheManager::getInstance()->get(tid);
+    string ret(cache->get(_sought));
+    if(string() != ret){
+        return ret;
+    }
+
     vector<std::pair<string, int>> vec(Dictionary::getInstance()->doQuery(_sought));
     for(auto& pair: vec){
         CandidateResult cr;
@@ -45,6 +54,7 @@ std::string KeyRecommander::doQuery(){
         _prique.pop();
         --n;
     }
+    cache->put(_sought, json);
     return json.dump();
 }
 

@@ -8,6 +8,8 @@
 using std::cout;
 using std::endl;
 
+
+
 ThreadPool *gPool = nullptr;
 
 namespace CallBack{
@@ -34,24 +36,12 @@ void startServer()
 
 /* ================================ main ================================ */
 int main(int args, char *argv[]){
+    CacheManager::getInstance();
     Configuration::getInstance();
     Dictionary::getInstance();
     WebPageQuery::getInstance();
 
     LOG_INFO("server ready!");
-    //puts("================");
-    //WebPageQuery::IndexTable table =  WebPageQuery::getInstance()->doQuery("平安泰达金融中心");
-    //for(auto p: table){
-    //    cout << p.first << "      ";
-    //    for(auto i: p.second){
-    //        cout << i.first << " " << i.second << "    ";
-    //    }
-    //    cout << "\n";
-    //}
-    
-    /* cout << WebPageQuery::getInstance()->getPage(10) << "\n"; */
-    /* WebPageQuery::getInstance()->getPage(10); */
-
     startServer();
 
     return 0;
