@@ -31,7 +31,8 @@ std::string KeyRecommander::doQuery(){
     Cache* cache = CacheManager::getInstance()->getCache(tid);
     string ret(cache->get(_sought));
     if(string() != ret){
-        LOG_INFO("used cache");
+        /* LOG_INFO("used cache"); */
+        puts(">> used cache\n");
         return ret;
     }
 

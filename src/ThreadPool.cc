@@ -1,4 +1,5 @@
 #include "../include/ThreadPool.h"
+#include "../include/log4cpp.h"
 #include "../include/Cache.h"
 
 #include <iostream>
@@ -43,7 +44,7 @@ void ThreadPool::stop(){
     return;
 }
 
-void ThreadPool::addTask(Task &&task){
+void ThreadPool::addTask(Task&& task){
     if(task){
         _taskQueue.push(std::move(task));
     }

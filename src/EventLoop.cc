@@ -1,8 +1,12 @@
-#include "../include/EventLoop.h"
 #include "../include/Acceptor.h"
-#include "../include/TcpConnection.h"
+#include "../include/Cache.h"
+#include "../include/EventLoop.h"
 #include "../include/log4cpp.h"
+#include "../include/TcpConnection.h"
+#include "../include/TimerFd.h"
+#include "../include/ThreadPool.h"
 
+#include <functional>
 #include <string>
 #include <unistd.h>
 #include <sys/eventfd.h>
@@ -11,16 +15,18 @@
 #include <sstream>
 #include <iostream>
 
-
 using std::cerr;
 using std::cout;
 using std::endl;
+
+extern ThreadPool *gPool;
 
 EventLoop::EventLoop(Acceptor &acceptor)
 : _epfd(createEpollFd())
 , _evtList(1024)//采用个count个value进行初始化
 , _isLooping(false)
 , _acceptor(acceptor)
+, _cacheTimer(nullptr)
 , _evtfd(createEventFd())//创建用于通知的文件描述符
 , _pengdings()
 , _mutex()
@@ -31,9 +37,26 @@ EventLoop::EventLoop(Acceptor &acceptor)
 
     //监听用于通信的文件描述符
     addEpollReadFd(_evtfd);
+
+    //添加用于同步缓存的定时器的文件描述符
+    /* TimerFd::Task task = std::bind(&CacheManager::updateCache, CacheManager::getInstance()); */
+
+    string initSec = Configuration::getInstance()->getConfigMap()["initSec"];
+    string peridocSec = Configuration::getInstance()->getConfigMap()["peridocSec"];
+
+    _cacheTimer = new TimerFd([](){
+            gPool->addTask(std::move(std::bind(&CacheManager::updateCache, CacheManager::getInstance())));
+        }, 
+        stoi(initSec), stoi(peridocSec)
+    );
+    addEpollReadFd(_cacheTimer->fd());
 }
 
 EventLoop::~EventLoop(){
+    if(_cacheTimer){
+        delete _cacheTimer;
+        _cacheTimer = nullptr;
+    }
     close(_epfd);
     close(_evtfd);
 }
@@ -63,7 +86,7 @@ void EventLoop::waitEpollFd(){
         return;
     }
     else if(0 == nready){
-        LOG_INFO("epoll_wait timeout!!!")
+        LOG_INFO("epoll_wait timeout!!!");
     }else{
         //需要考虑vector，也就是_evtList的扩容问题(1024)
         if((int)_evtList.size() == nready){
@@ -74,16 +97,14 @@ void EventLoop::waitEpollFd(){
             int listenfd = _acceptor.fd();
             int fd = _evtList[idx].data.fd;
 
-            if(fd == listenfd){         //有新的连接请求
+            if(fd == listenfd){                     //有新的连接请求
                 handleNewConnection();
-            }else if(fd == _evtfd){     //通信的文件描述符就绪
-                handleRead();
-                //可以执行所有的"任务",就是遍历vector
+            }else if(fd == _cacheTimer->fd()){      //定时的文件描述符就绪
+                handleRead(_cacheTimer->fd());
+                _cacheTimer->task()();
+            }else if(fd == _evtfd){                 //通信的文件描述符就绪
+                handleRead(_evtfd);
                 doPengdingFunctors();
-                /* for(auto &cb : _pengdings) */
-                /* { */
-                /*     cb(); */
-                /* } */
             }else{
                 handleMessage(fd);//处理老的连接
             }
@@ -160,8 +181,8 @@ void EventLoop::addEpollReadFd(int fd){
     if(ret < 0){
         LOG_ERROR("addEpollFd failed");
         /* perror("addEpollReadFd"); */
-        return;
     }
+    return;
 }
 
 //将文件描述符从红黑树上取消监听
@@ -202,9 +223,9 @@ int EventLoop::createEventFd(){
 }
 
 //封装read
-void EventLoop::handleRead(){
+void EventLoop::handleRead(int fd){
     uint64_t one = 1;
-    ssize_t ret = read(_evtfd, &one, sizeof(uint64_t));
+    ssize_t ret = read(fd, &one, sizeof(uint64_t));
     if(ret != sizeof(uint64_t)){
         perror("handleRead");
     }
@@ -219,8 +240,7 @@ void EventLoop::wakeup(){
 }
 
 void EventLoop::doPengdingFunctors(){
-    vector<Functor> tmp;
-    {
+    vector<Functor> tmp;{
         lock_guard<mutex> lg(_mutex);
         tmp.swap(_pengdings);
     }
@@ -233,8 +253,7 @@ void EventLoop::doPengdingFunctors(){
     }
 }
 
-void EventLoop::runInLoop(Functor &&cb){
-    {
+void EventLoop::runInLoop(Functor &&cb){{
         lock_guard<mutex> lg(_mutex);
         _pengdings.push_back(std::move(cb));
     }

@@ -15,7 +15,8 @@ using std::function;
 using std::mutex;
 using std::lock_guard;
 
-class Acceptor;//前向声明
+class Acceptor;
+class TimerFd;
 class TcpConnection;
 
 using TcpConnectionPtr = shared_ptr<TcpConnection>;
@@ -57,7 +58,7 @@ public:
     //创建用于通知的文件描述符
     int createEventFd();
     //封装read
-    void handleRead();
+    void handleRead(int fd);
     //封装write
     void wakeup();
     void doPengdingFunctors();
@@ -65,11 +66,12 @@ public:
 
 private:
     Acceptor &_acceptor;                //Acceptor的引用
-    mutex _mutex;                       //互斥访问vector
+    TimerFd* _cacheTimer;                //计时器，用于同步缓存
     
     int _epfd;                          //epoll_create创建的文件描述符
     int _evtfd;                         //用于通知的文件描述符
-                                        //
+
+    mutex _mutex;                       //互斥访问vector
     bool _isLooping;                    //标识循环是否进行的标志
                                         
     vector<Functor> _pengdings;         //存放要执行的"任务"

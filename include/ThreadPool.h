@@ -17,7 +17,7 @@ public:
     void start();
     void stop();
     /* 任务的添加与获取 */
-    void addTask(Task && task);
+    void addTask(Task &&task);
 private:
     Task getTask();
     /* 线程池交给工作线程执行的任务（线程入口函数） */

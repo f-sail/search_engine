@@ -149,11 +149,10 @@ std::string Cache::get(const std::string& key)const{
     lock_guard<mutex> lock(*_pmutex);
     _update->get(key);
     return _cache->get(key);
-
 }
 void Cache::put(const std::string& key, const std::string& value){
     lock_guard<mutex> lock(*_pmutex);
-    _update->put(key,string());
+    _update->put(key, string(""));
     return _cache->put(key, value);
 }
 std::vector<std::string> Cache::getUpdateList(void)const{
@@ -163,7 +162,6 @@ std::vector<std::string> Cache::getUpdateList(void)const{
 
 void Cache::update(const Cache* rhs){
     vector<string> updateList = rhs->getUpdateList();
-    
     lock_guard<mutex> lock(*_pmutex);
     for(const string& key: updateList){
         put(key, rhs->get(key));
@@ -207,10 +205,11 @@ CacheManager* CacheManager::getInstance(){
 }
 
 void CacheManager::updateCache(){
-    for(const auto& pair: _locals){
+    LOG_INFO("CacheManager::updateCache()");
+    for(auto& pair: _locals){
         _common->update(pair.second);
     }
-    for(const auto& pair: _locals){
+    for(auto& pair: _locals){
         pair.second->update(_common);
     }
     return;

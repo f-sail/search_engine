@@ -32,14 +32,15 @@ int main(int argc, char *argv[]){
 	while(1){
         TLV msg;
 #if 1
+		cout << ">> 测试推荐: ";
 		getline(cin, msg.value);
-		cout << ">> pls input some message:";
         msg.type = TYPE_RECOMMEND;
         msg.len = msg.value.size();
         sendTLV(clientfd, msg);
         char buff[65535] = {0};
+        cout << ">> 等待回复...\n";
 		recv(clientfd, buff, sizeof(buff), 0);
-		printf("recv msg from server: %s\n", buff);
+		printf("回复: %s\n", buff);
 #endif    
 #if 0
         msg.type = TYPE_SEARCH;
