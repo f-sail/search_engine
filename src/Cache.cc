@@ -131,7 +131,6 @@ void LRU::refresh(KeyValue* p_kv){
 Cache::Cache()
 : _cache(new LRU())
 , _update(new LRU())
-, _pmutex(new mutex())
 {
     return;
 }
@@ -141,28 +140,26 @@ Cache::~Cache(){
     _cache = nullptr;
     delete _update;
     _update = nullptr;
-    delete _pmutex;
-    _pmutex = nullptr;
 }
 
-std::string Cache::get(const std::string& key)const{
-    lock_guard<mutex> lock(*_pmutex);
+std::string Cache::get(const std::string& key){
+    lock_guard<std::recursive_mutex> lock(_mutex);
     _update->get(key);
     return _cache->get(key);
 }
 void Cache::put(const std::string& key, const std::string& value){
-    lock_guard<mutex> lock(*_pmutex);
+    lock_guard<std::recursive_mutex> lock(_mutex);
     _update->put(key, string(""));
     return _cache->put(key, value);
 }
-std::vector<std::string> Cache::getUpdateList(void)const{
-    lock_guard<mutex> lock(*_pmutex);
+std::vector<std::string> Cache::getUpdateList(void){
+    lock_guard<std::recursive_mutex> lock(_mutex);
     return _update->getKeys(); 
 }
 
-void Cache::update(const Cache* rhs){
+void Cache::update(Cache* rhs){
     vector<string> updateList = rhs->getUpdateList();
-    lock_guard<mutex> lock(*_pmutex);
+    lock_guard<std::recursive_mutex> lock(_mutex);
     for(const string& key: updateList){
         put(key, rhs->get(key));
     }

@@ -7,6 +7,7 @@
 #include <vector>
 #include <mutex>
 
+
 class LRU;
 class Cache;
 class ThreadPool;
@@ -54,14 +55,14 @@ class Cache{
 public:
     Cache();
     ~Cache();
-    std::string get(const std::string& key)const;
+    std::string get(const std::string& key);
     void put(const std::string& key, const std::string& value);
-    std::vector<std::string> getUpdateList(void)const;
-    void update(const Cache*);
+    std::vector<std::string> getUpdateList(void);
+    void update(Cache*);
 private:
     LRU* _cache;
     LRU* _update;
-    std::mutex* _pmutex;
+    std::recursive_mutex _mutex;
 };
 
 
@@ -82,7 +83,6 @@ private:
     Cache* _common;
     static CacheManager* _pInstance;
     std::unordered_map<std::thread::id, Cache*> _locals;
-
 };
 
 #endif
