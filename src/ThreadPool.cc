@@ -1,6 +1,8 @@
 #include "../include/ThreadPool.h"
+#include "../include/Cache.h"
 
 #include <iostream>
+#include <thread>
 
 using std::cout;
 using std::endl;
@@ -53,6 +55,7 @@ Task ThreadPool::getTask(){
 }
 
 void ThreadPool::doTask(){
+    CacheManager::getInstance()->setCache(std::this_thread::get_id(), new Cache());
     while(!_isExit){
         Task taskcb = getTask();
         if(taskcb){

@@ -31,17 +31,20 @@ int main(int argc, char *argv[]){
     int clientfd = tcpConnect();
 	while(1){
         TLV msg;
-		//getline(cin, msg.value);
-		//cout << ">> pls input some message:";
-        //msg.type = TYPE_RECOMMEND;
-        //msg.len = msg.value.size();
-        
+#if 1
+		getline(cin, msg.value);
+		cout << ">> pls input some message:";
+        msg.type = TYPE_RECOMMEND;
+        msg.len = msg.value.size();
+        sendTLV(clientfd, msg);
+        char buff[65535] = {0};
+		recv(clientfd, buff, sizeof(buff), 0);
+		printf("recv msg from server: %s\n", buff);
+#endif    
+#if 0
         msg.type = TYPE_SEARCH;
         msg.value = "第一班";
         msg.len = msg.value.size();
-/* int i = 0; */
-/* while(i++<1000){sendTLV(clientfd, msg);} */
-/* break; */
 
         sendTLV(clientfd, msg);
 	
@@ -49,6 +52,7 @@ int main(int argc, char *argv[]){
 		recv(clientfd, buff, sizeof(buff), 0);
 		printf("recv msg from server: %s\n", buff);
         break;
+#endif
 	}
 
 	close(clientfd);

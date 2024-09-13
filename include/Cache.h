@@ -9,6 +9,7 @@
 
 class LRU;
 class Cache;
+class ThreadPool;
 
 /* ================ KeyValue ================ */
 struct KeyValue{
@@ -66,13 +67,15 @@ private:
 
 /* ================ CacheManager ================ */
 class CacheManager{
+    friend ThreadPool;
 public:
     ~CacheManager();
     void updateCache();
-    Cache* get(std::thread::id);
+    Cache* getCache(std::thread::id);
     static CacheManager* getInstance();
 private:
     CacheManager();
+    void setCache(std::thread::id, Cache*);
     CacheManager(const CacheManager&) = delete;
     CacheManager& operator=(const CacheManager&) = delete;
 private:

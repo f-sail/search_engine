@@ -3,6 +3,7 @@
 #include "../include/Dictionary.h"
 #include "../include/Cache.h"
 
+#include "../include/log4cpp.h"
 #include "../include/json.hpp"
 
 #include <iostream>
@@ -27,9 +28,10 @@ KeyRecommander::~KeyRecommander(){
 
 std::string KeyRecommander::doQuery(){
     std::thread::id tid(std::this_thread::get_id());
-    Cache* cache = CacheManager::getInstance()->get(tid);
+    Cache* cache = CacheManager::getInstance()->getCache(tid);
     string ret(cache->get(_sought));
     if(string() != ret){
+        LOG_INFO("used cache");
         return ret;
     }
 
@@ -54,7 +56,7 @@ std::string KeyRecommander::doQuery(){
         _prique.pop();
         --n;
     }
-    cache->put(_sought, json);
+    cache->put(_sought, json.dump());
     return json.dump();
 }
 

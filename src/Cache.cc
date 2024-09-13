@@ -1,4 +1,5 @@
 #include "../include/Cache.h"
+#include "../include/log4cpp.h"
 #include "../include/Configuration.h"
 
 #include <features.h>
@@ -19,7 +20,9 @@ using std::lock_guard;
 KeyValue::KeyValue(const std::string& key, const std::string& value)
 : _key(key)
 , _value(value)
-{return;}
+{
+    return;
+}
 
 KeyValue::~KeyValue(void){}
 
@@ -31,8 +34,8 @@ KeyValue::~KeyValue(void){}
 /* ================ CacheManager ================ */
 LRU::LRU(void)
 : _capacity(stoul(Configuration::getInstance()->getConfigMap()["capacity_LRU"]))
-, _phead(new KeyValue(0, 0))
-, _ptail(new KeyValue(0, 0))
+, _phead(new KeyValue("", ""))
+, _ptail(new KeyValue("", ""))
 {
     _phead->_prev = nullptr;
     _phead->_next = _ptail;
@@ -174,12 +177,20 @@ CacheManager* CacheManager::_pInstance = nullptr;
 
 CacheManager::CacheManager()
 : _common(new Cache())
-{}
+{
+    return;
+}
 
 CacheManager::~CacheManager(){
     if(_common){
         delete _common;
         _common = nullptr;
+    }
+    for(auto pair: _locals){
+        if(pair.second){
+            delete pair.second;
+            pair.second = nullptr;
+        }
     }
     if(_pInstance){
         delete _pInstance;
@@ -205,7 +216,12 @@ void CacheManager::updateCache(){
     return;
 }
 
-Cache* CacheManager::get(std::thread::id id){
+Cache* CacheManager::getCache(std::thread::id id){
     return _locals[id];
+}
+
+void CacheManager::setCache(std::thread::id id, Cache* cache){
+    _locals.emplace(id, std::move(cache));
+    return;
 }
 
