@@ -30,7 +30,7 @@ std::string KeyRecommander::doQuery(){
     std::thread::id tid(std::this_thread::get_id());
     Cache* cache = CacheManager::getInstance()->getCache(tid);
     string ret(cache->get(_sought));
-    if(string() != ret){
+    if(string("") != ret){
         puts(">> used cache");
         return ret;
     }

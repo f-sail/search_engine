@@ -32,40 +32,45 @@ int main(int argc, char *argv[]){
     int clientfd = tcpConnect();
     SplitTool* cutter = new SplitToolCppJieba();
 	while(1){
+        int i = -1;
         TLV msg;
-#if 0
-		cout << ">> 推荐词测试: ";
-		getline(cin, msg.value);
-        msg.type = TYPE_RECOMMEND;
-        msg.len = msg.value.size();
-        sendTLV(clientfd, msg);
-        char buff[65535] = {0};
-        cout << ">> 等待回复...\n";
-		recv(clientfd, buff, sizeof(buff), 0);
-		printf(">> 服务端回复: %s\n", buff);
-#endif    
-#if 1
-		cout << ">> 网页搜索测试: ";
-		getline(cin, msg.value);
-        msg.type = TYPE_SEARCH;
-        /* msg.value = "第一班"; */
-        msg.len = msg.value.size();
-        sendTLV(clientfd, msg);
+        cout << ">> 请输入测试功能：0、退出     1、推荐词     2、网页查询\n";
+        cin >> i;
+        cin.clear();
+        cin.ignore();
+        if(1 == i){
+		    cout << ">> 推荐词测试: ";
+		    getline(cin, msg.value);
+            msg.type = TYPE_RECOMMEND;
+            msg.len = msg.value.size();
+            sendTLV(clientfd, msg);
+            char buff[65535] = {0};
+            cout << ">> 等待回复...\n";
+		    recv(clientfd, buff, sizeof(buff), 0);
+		    printf(">> 服务端回复: %s\n", buff);
+        }else if(2 == i){
+		    cout << ">> 网页搜索测试: ";
+		    getline(cin, msg.value);
+            msg.type = TYPE_SEARCH;
+            /* msg.value = "第一班"; */
+            msg.len = msg.value.size();
+            sendTLV(clientfd, msg);
 	
-        char buff[65535] = {0};
-        cout << ">> 等待回复...\n";
-		recv(clientfd, buff, sizeof(buff), 0);
-		/* printf(">> 服务端回复: %s\n", buff); */
-        nlohmann::json jsonArr(buff);        
-	    printf(">> 服务端回复: \n");
-        for(auto& str: jsonArr){
-            WebPage wp(cutter->rss(buff));
-            cout << ">> title: " << wp.title << "\n";
-            cout << ">> url: " << wp.url << "\n";
-            cout << ">> content" << wp.content << "\n\n";
+            char buff[65535] = {0};
+            cout << ">> 等待回复...\n";
+		    recv(clientfd, buff, sizeof(buff), 0);
+		    /* printf(">> 服务端回复: %s\n", buff); */
+            nlohmann::json jsonArr(buff);        
+	        printf(">> 服务端回复: \n");
+            for(auto& str: jsonArr){
+                WebPage wp(cutter->rss(buff));
+                cout << ">> title: " << wp.title << "\n";
+                cout << ">> url: " << wp.url << "\n";
+                cout << ">> content" << wp.content << "\n\n";
+            }
+        }else{
+            break;
         }
-        /* break; */
-#endif
 	}
     
     delete cutter;

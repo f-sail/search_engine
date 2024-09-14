@@ -64,7 +64,7 @@ std::string LRU::get(const std::string& key){
         refresh(_kvPtrs[key]);
         return _kvPtrs[key]->_value;
     }
-    static string nullstr = string();
+    static string nullstr = string("");
     return nullstr;
 }
 
@@ -202,13 +202,14 @@ CacheManager* CacheManager::getInstance(){
 }
 
 void CacheManager::updateCache(){
-    LOG_INFO("CacheManager::updateCache()");
+    LOG_INFO("updateCache...");
     for(auto& pair: _locals){
         _common->update(pair.second);
     }
     for(auto& pair: _locals){
         pair.second->update(_common);
     }
+    LOG_INFO("update Completed");
     return;
 }
 
