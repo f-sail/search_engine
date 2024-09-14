@@ -38,7 +38,9 @@ int main(int argc, char *argv[]){
         cin >> i;
         cin.clear();
         cin.ignore();
-        if(1 == i){
+        if(0 == i){
+            break;
+        }else if(1 == i){
 		    cout << ">> 推荐词测试: ";
 		    getline(cin, msg.value);
             msg.type = TYPE_RECOMMEND;
@@ -69,7 +71,7 @@ int main(int argc, char *argv[]){
                 cout << ">> content" << wp.content << "\n\n";
             }
         }else{
-            break;
+            continue;
         }
 	}
     

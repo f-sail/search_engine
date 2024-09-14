@@ -15,6 +15,7 @@ class ThreadPool;
 /* ================ KeyValue ================ */
 struct KeyValue{
     friend LRU;
+    friend Cache;
 public:
     KeyValue(const std::string& key, const std::string& value);
     ~KeyValue(void);
@@ -28,7 +29,7 @@ private:
 
 /* ================ LRU ================ */
 class LRU{
-    /* friend Cache; */
+    friend Cache;
 public:
     LRU(void);
     ~LRU(void);
@@ -57,8 +58,8 @@ public:
     ~Cache();
     std::string get(const std::string& key);
     void put(const std::string& key, const std::string& value);
-    std::vector<std::string> getUpdateList(void);
     void update(Cache*);
+    void swapLRU();
 private:
     LRU* _cache;
     LRU* _update;

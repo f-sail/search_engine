@@ -2,6 +2,7 @@
 #include "../include/log4cpp.h"
 #include "../include/Configuration.h"
 
+#include <cstdio>
 #include <features.h>
 
 #include <cstdlib>
@@ -144,25 +145,26 @@ Cache::~Cache(){
 
 std::string Cache::get(const std::string& key){
     lock_guard<std::recursive_mutex> lock(_mutex);
-    _update->get(key);
     return _cache->get(key);
 }
 void Cache::put(const std::string& key, const std::string& value){
     lock_guard<std::recursive_mutex> lock(_mutex);
-    _update->put(key, string(""));
     return _cache->put(key, value);
-}
-std::vector<std::string> Cache::getUpdateList(void){
-    lock_guard<std::recursive_mutex> lock(_mutex);
-    return _update->getKeys(); 
 }
 
 void Cache::update(Cache* rhs){
-    vector<string> updateList = rhs->getUpdateList();
-    lock_guard<std::recursive_mutex> lock(_mutex);
-    for(const string& key: updateList){
-        put(key, rhs->get(key));
+    KeyValue* pcurr = rhs->_update->_ptail->_prev;
+    while(pcurr != rhs->_update->_phead){
+        put(pcurr->_key, pcurr->_value);
     }
+    return;
+}
+
+void Cache::swapLRU(){
+    lock_guard<std::recursive_mutex> lock(_mutex);
+    LRU* tmp = _cache;
+    _cache = _update;
+    _update = tmp;
     return;
 }
 
