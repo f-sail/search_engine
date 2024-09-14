@@ -16,7 +16,6 @@ private:
     Dictionary();
     ~Dictionary();
     void Loading();
-    /* int distance(std::string candidate); */
 private:
     static Dictionary* _pInstance;
     std::vector<std::pair<std::string, int>> _dict;

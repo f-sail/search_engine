@@ -20,11 +20,6 @@ class PageLibPreprocessor{
         int DF;
         std::unordered_map<int, int> docTF; // docTF<docid, TF>
     };
-    //struct Weights{
-    //    int docid;
-    //    double weight;
-    //    bool operator<(const Weights&);
-    //};
 public:
     PageLibPreprocessor();
     ~PageLibPreprocessor();

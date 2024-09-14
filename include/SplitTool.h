@@ -24,7 +24,6 @@ public:
     static WebPage rss(const std::string& doc);
 };
 
-
 class SplitToolCppJieba
 : public SplitTool
 {

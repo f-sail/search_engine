@@ -6,7 +6,7 @@
 
 enum Type{
     TYPE_ERROR = -1,    // 错误
-    TYPE_DISCONNECT,    // 断开连接
+    TYPE_DISCONNECT,    // 
     TYPE_EMPTY,         // 空value
     TYPE_RECOMMEND,     // 推荐
     TYPE_SEARCH,        // 搜索
