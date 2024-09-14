@@ -70,7 +70,6 @@ SplitToolCppJieba::SplitToolCppJieba()
     const char* const USER_DICT_PATH = "../include/cppjieba/dict/user.dict.utf8";
     const char* const IDF_PATH = "../include/cppjieba/dict/idf.utf8";
     const char* const STOP_WORD_PATH = "../include/cppjieba/dict/stop_words.utf8";
-    /* cppjieba::Jieba jieba(DICT_PATH, HMM_PATH, DICT_PATH, IDF_PATH, STOP_WORD_PATH); */
     _pJieba = new cppjieba::Jieba(DICT_PATH, HMM_PATH, DICT_PATH, IDF_PATH, STOP_WORD_PATH);
     return;
 }

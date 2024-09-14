@@ -31,10 +31,10 @@ std::string KeyRecommander::doQuery(){
     Cache* cache = CacheManager::getInstance()->getCache(tid);
     string ret(cache->get(_sought));
     if(string() != ret){
-        /* LOG_INFO("used cache"); */
-        puts(">> used cache\n");
+        puts(">> used cache");
         return ret;
     }
+    puts(">> not used cache");
 
     vector<std::pair<string, int>> vec(Dictionary::getInstance()->doQuery(_sought));
     for(auto& pair: vec){

@@ -39,7 +39,6 @@ DicProducer::DicProducer(std::string, SplitTool* tool)
         ds.traverse(Configuration::getInstance()->getConfigMap()["path_yuliao/"]);
         _files = ds.getFiles();
     }
-    //getFiles(Configuration::getInstance()->getConfigMap()["path_yuliao/"]);
     buildFreq();
     buildDict();
     createIndex();

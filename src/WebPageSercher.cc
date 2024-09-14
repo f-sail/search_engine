@@ -22,9 +22,7 @@ public:
 public:
     CosineValue(int docid = 0, double value = 0):_docid(docid),_value(value){}
     bool operator<(const CosineValue & rhs)const{return _value < rhs._value;}
-    /* friend bool operator<(const CosineValue & lhs, const CosineValue & rhs); */
 };
-/* bool operator<(const CosineValue & lhs, const CosineValue & rhs){} */
 
 
 WebPageSercher::WebPageSercher(const std::string& key)
@@ -42,10 +40,12 @@ std::string WebPageSercher::doQuery(){
     std::thread::id tid(std::this_thread::get_id());
     Cache* cache = CacheManager::getInstance()->getCache(tid);
     string ret(cache->get(_sought));
-    if(string() != ret){
-        LOG_INFO("used cache");
+    if(string("") != ret){
+        /* LOG_INFO("used cache"); */
+        puts(">> used cache");
         return ret;
     }
+    puts(">> not used cache");
 
     nlohmann::json jsonArr;
     while(_pq.size()){

@@ -73,9 +73,6 @@ void PageLibPreprocessor::cutRedundantPage(){
     }
     ifs.close();
     ofs.close();
-    //for(auto i: _new_offsetLib){
-    //    cout << i.first << " " << i.second.first << " " << i.second.second << "\n";
-    //}
     return;
 }
 

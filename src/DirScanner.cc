@@ -15,7 +15,6 @@ std::vector<std::string>& DirScanner::getFiles(){
 void DirScanner::traverse(std::string dir){
     DIR * dirp = opendir(dir.data());
     if(nullptr == dirp){
-        // todo
         perror("opendir failed");
         return;
     }
@@ -29,9 +28,6 @@ void DirScanner::traverse(std::string dir){
             }
         }
     }
-    //for(auto i: _files){
-    //    puts(i.data());
-    //}
 
     return;
 }

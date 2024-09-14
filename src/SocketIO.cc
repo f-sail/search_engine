@@ -43,7 +43,7 @@ int SocketIO::read(char *buf, size_t size){
 }
 
 TLV SocketIO::readTLV(){
-    /* LOG_DEBUG("===========in readTLV=============="); */
+    LOG_DEBUG("in readTLV");
     TLV msg;
 
     int ret = readT(&msg.type, sizeof(msg.type));
@@ -67,14 +67,14 @@ TLV SocketIO::readTLV(){
     if(0 == msg.len){
         msg.type = TYPE_EMPTY;
         return msg;
-    }
+ }
 
     ret = readV(msg.value, msg.len);
     if(-1 == ret){
         msg.type = TYPE_ERROR;
         return msg;
     }else if(0 == ret){
-        msg.type = TYPE_DISCONNECT;
+        msg.type = TYPE_ERROR;
         return msg;
     }
 
