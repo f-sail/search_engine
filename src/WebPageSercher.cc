@@ -1,3 +1,4 @@
+#include "../include/Redis.h"
 #include "../include/WebPageSercher.h"
 #include "../include/json.hpp"
 #include "../include/log4cpp.h"
@@ -37,12 +38,18 @@ WebPageSercher::WebPageSercher(const std::string& key)
 WebPageSercher::~WebPageSercher(){}
 
 std::string WebPageSercher::doQuery(){
+    string str(Redis::getInstance()->getValue("wps_"+_string));
+    if(string() != str){
+        return str;
+    }
+
     nlohmann::json jsonArr;
     while(_pq.size()){
         string doc(WebPageQuery::getInstance()->getPage(_pq.top()._docid));
         _pq.pop();
         jsonArr.emplace_back(doc); 
     }
+    Redis::getInstance()->setKV("wps_" + _string, jsonArr.dump());
     return jsonArr.dump();
 }
 

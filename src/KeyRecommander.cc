@@ -24,7 +24,7 @@ KeyRecommander::~KeyRecommander(){
 }
 
 std::string KeyRecommander::doQuery(){
-    string str(Redis::getInstance()->getValue(_sought));
+    string str(Redis::getInstance()->getValue("kr_"+_sought));
     if(string() != str){
         return str;
     }
@@ -49,7 +49,7 @@ std::string KeyRecommander::doQuery(){
         _prique.pop();
         --n;
     }
-    Redis::getInstance()->setKV(_sought, json.dump());
+    Redis::getInstance()->setKV("kr_" + _sought, json.dump());
     return json.dump();
 }
 
