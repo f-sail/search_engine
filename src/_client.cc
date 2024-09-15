@@ -1,6 +1,7 @@
 #include "../include/_client.h"
 
 #include "../include/TLV.h"
+#include "../include/SplitTool.h"
 #include "../include/json.hpp"
 
 #include <ostream>
@@ -29,32 +30,66 @@ int sendTLV(int,const TLV&);
 
 int main(int argc, char *argv[]){
     int clientfd = tcpConnect();
+    SplitTool* cutter = new SplitToolCppJieba();
 	while(1){
+        int i = -1;
+        cout << ">> 选择测试功能: 1、推荐词     2、网页搜索: \n";
+        cin >> i;
+        
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        
+
         TLV msg;
-#if 1
-		getline(cin, msg.value);
-		cout << ">> pls input some message:";
-        msg.type = TYPE_RECOMMEND;
-        msg.len = msg.value.size();
-        sendTLV(clientfd, msg);
-        char buff[65535] = {0};
-		recv(clientfd, buff, sizeof(buff), 0);
-		printf("recv msg from server: %s\n", buff);
-#endif    
-#if 0
-        msg.type = TYPE_SEARCH;
-        msg.value = "第一班";
-        msg.len = msg.value.size();
-
-        sendTLV(clientfd, msg);
+        if(1 == i){
+		    cout << ">> 推荐词测试: ";
+		    getline(cin, msg.value);
+            
+            msg.type = TYPE_RECOMMEND;
+            msg.len = msg.value.size();
+            sendTLV(clientfd, msg);
+            
+            cout << ">> 等待回复...\n";
+            char buff[65535] = {0};
+		    recv(clientfd, buff, sizeof(buff), 0);
+            cout << buff << "\n";
+        }else if(2 == i){
+		    cout << ">> 网页搜索测试: ";
+		    getline(cin, msg.value);
+            
+            msg.type = TYPE_SEARCH;
+            msg.len = msg.value.size();
+            sendTLV(clientfd, msg);
 	
-        char buff[65535] = {0};
-		recv(clientfd, buff, sizeof(buff), 0);
-		printf("recv msg from server: %s\n", buff);
-        break;
-#endif
+            cout << ">> 等待回复...\n";
+            string str;
+            while(1){
+                char buff[65535] = {0};
+		        int ret = recv(clientfd, buff, sizeof(buff), 0);
+                if(-1 == ret){
+                    std::cerr << "recv error\n";
+                }if(0 == ret){
+                    break;
+                }else{
+                    str += buff;
+                    if(ret < sizeof(buff)){
+                        break;
+                    }
+                }
+            }
+	        printf(">> 服务端回复: \n");
+		    /* printf(">> %s\n", str.c_str()); */
+            nlohmann::json jsonArr = nlohmann::json::parse(str);
+            for(auto& str: jsonArr){
+                WebPage wp(cutter->rss(str));
+                cout << ">> title: " << wp.title << "\n";
+                cout << ">> url: " << wp.url << "\n";
+                cout << ">> content" << wp.content << "\n\n";
+            }
+        }
 	}
-
+    
+    delete cutter;
 	close(clientfd);
 	return 0;
 
