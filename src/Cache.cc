@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <mutex>
+#include <pthread.h>
 
 using std::cout;
 using std::endl;
@@ -152,11 +153,29 @@ void Cache::put(const std::string& key, const std::string& value){
     return _cache->put(key, value);
 }
 
-void Cache::update(Cache* rhs){
-    KeyValue* pcurr = rhs->_update->_ptail->_prev;
-    while(pcurr != rhs->_update->_phead){
-        put(pcurr->_key, pcurr->_value);
+void Cache::updateToCommon(Cache* local){
+    {
+        lock_guard<std::recursive_mutex> lock(_mutex);
+        local->swapLRU();
     }
+    KeyValue* pcurr = local->_update->_ptail->_prev;
+    while(pcurr != local->_update->_phead){
+        cout << pcurr->_key << " ";
+        _cache->put(pcurr->_key, pcurr->_value);
+        pcurr = pcurr->_prev;
+    }
+    cout << "\n";
+    return;
+}
+
+void Cache::updateByCommon(Cache* common){
+    KeyValue* pcurr = common->_cache->_ptail->_prev;
+    while(pcurr != common->_cache->_phead){
+        cout << pcurr->_key << " ";
+        _update->put(pcurr->_key, pcurr->_value);
+        pcurr = pcurr->_prev;
+    }
+    cout << "\n";
     return;
 }
 
@@ -206,10 +225,12 @@ CacheManager* CacheManager::getInstance(){
 void CacheManager::updateCache(){
     LOG_INFO("updateCache...");
     for(auto& pair: _locals){
-        _common->update(pair.second);
+        cout << ">> _local ---> _common:\t";
+        _common->updateToCommon(pair.second);
     }
     for(auto& pair: _locals){
-        pair.second->update(_common);
+        cout << ">> _common ---> _local:\t";
+        pair.second->updateByCommon(_common);
     }
     LOG_INFO("update Completed");
     return;

@@ -10,6 +10,7 @@
 
 class LRU;
 class Cache;
+class CacheManager;
 class ThreadPool;
 
 /* ================ KeyValue ================ */
@@ -53,12 +54,14 @@ private:
 
 /* ================ Cache ================ */
 class Cache{
+    friend CacheManager;
 public:
     Cache();
     ~Cache();
     std::string get(const std::string& key);
     void put(const std::string& key, const std::string& value);
-    void update(Cache*);
+    void updateToCommon(Cache*);
+    void updateByCommon(Cache*);
     void swapLRU();
 private:
     LRU* _cache;
