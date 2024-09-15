@@ -157,12 +157,15 @@ std::vector<std::string> Cache::getUpdateList(void){
     return _update->getKeys(); 
 }
 
-void Cache::update(Cache* rhs){
-    vector<string> updateList = rhs->getUpdateList();
+void Cache::update(Cache* local){
+    vector<string> updateList = local->getUpdateList();
+
     lock_guard<std::recursive_mutex> lock(_mutex);
     for(const string& key: updateList){
-        put(key, rhs->get(key));
+        cout << key << " ";
+        put(key, local->_cache->get(key));
     }
+    cout << "\n";
     return;
 }
 
@@ -204,9 +207,11 @@ CacheManager* CacheManager::getInstance(){
 void CacheManager::updateCache(){
     LOG_INFO("updateCache...");
     for(auto& pair: _locals){
+        cout << ">> local ---> common:\t";
         _common->update(pair.second);
     }
     for(auto& pair: _locals){
+        cout << ">> common ---> local:\t";
         pair.second->update(_common);
     }
     LOG_INFO("update Completed");

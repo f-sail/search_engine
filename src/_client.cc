@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
     int clientfd = tcpConnect();
     SplitTool* cutter = new SplitToolCppJieba();
 	while(1){
-        int i = 2;
+        int i = 1;
         TLV msg;
         //cout << ">> 请输入测试功能：0、退出     1、推荐词     2、网页查询\n";
         //cin >> i;
@@ -78,9 +78,6 @@ int main(int argc, char *argv[]){
 	return 0;
 
 }
-
-
-
 
 
 int tcpConnect(void){

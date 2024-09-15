@@ -43,7 +43,7 @@ int SocketIO::read(char *buf, size_t size){
 }
 
 TLV SocketIO::readTLV(){
-    LOG_DEBUG("in readTLV");
+    /* LOG_DEBUG("in readTLV"); */
     TLV msg;
 
     int ret = readT(&msg.type, sizeof(msg.type));

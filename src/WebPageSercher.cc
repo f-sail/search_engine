@@ -39,7 +39,7 @@ std::string WebPageSercher::doQuery(){
     /* 查缓存 */
     std::thread::id tid(std::this_thread::get_id());
     Cache* cache = CacheManager::getInstance()->getCache(tid);
-    string ret(cache->get(_sought));
+    string ret(cache->get("wps_" + _sought));
     if(string("") != ret){
         /* LOG_INFO("used cache"); */
         puts(">> used cache");
@@ -53,7 +53,7 @@ std::string WebPageSercher::doQuery(){
         _pq.pop();
         jsonArr.emplace_back(doc); 
     }
-    cache->put(_sought, jsonArr.dump());   // 存入缓存
+    cache->put("wps" + _sought, jsonArr.dump());   // 存入缓存
     return jsonArr.dump();
 }
 

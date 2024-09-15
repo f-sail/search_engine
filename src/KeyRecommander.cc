@@ -29,7 +29,7 @@ KeyRecommander::~KeyRecommander(){
 std::string KeyRecommander::doQuery(){
     std::thread::id tid(std::this_thread::get_id());
     Cache* cache = CacheManager::getInstance()->getCache(tid);
-    string ret(cache->get(_sought));
+    string ret(cache->get("kr_" + _sought));
     if(string("") != ret){
         puts(">> used cache");
         return ret;
@@ -57,7 +57,7 @@ std::string KeyRecommander::doQuery(){
         _prique.pop();
         --n;
     }
-    cache->put(_sought, json.dump());
+    cache->put("kr_" + _sought, json.dump());
     return json.dump();
 }
 
